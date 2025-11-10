@@ -1,6 +1,8 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
-	import { aboutParagraphs, techSkills } from '$lib/data/about';
+	import { aboutParagraphs } from '$lib/data/about';
+	import type { PageData } from './$types';
+	let { data }: { data: PageData } = $props();
 </script>
 
 <svelte:head>
@@ -18,16 +20,18 @@
 		</div>
 
 		<div>
-			<h3 class="text-lg md:text-xl font-semibold text-gray-900">Tools & Technologies</h3>
-			<div class="mt-6 md:mt-8 grid grid-cols-3 md:grid-cols-6 gap-4 md:gap-6">
-				{#each techSkills as t (t.name)}
-					<div class="flex flex-col items-center justify-center gap-3 rounded-2xl bg-gray-100/80 px-6 py-6 h-[145px] w-[145px] ring-1 ring-black/5 shadow-sm hover:bg-white transition">
-						<Icon icon={t.icon} width="32" height="32" class="md:hidden" />
-						<Icon icon={t.icon} width="40" height="40" class="hidden md:block" />
-						<span class="text-sm md:text-base text-gray-700">{t.name}</span>
-					</div>
-				{/each}
-			</div>
+			{#each data.categories as category (category.name)}
+				<h3 class="text-lg md:text-xl font-semibold text-gray-900">{category.name}</h3>
+				<div class="mt-6 md:mt-8 mb-8 md:mb-12 grid grid-cols-3 md:grid-cols-6 gap-4 md:gap-6">
+					{#each category.skills as skill (skill.name)}
+						<div class="flex flex-col items-center justify-center gap-3 rounded-2xl bg-gray-100/80 px-6 py-6 h-[145px] w-[145px] ring-1 ring-black/5 shadow-sm hover:bg-white transition">
+							<Icon icon={skill.icon} width="32" height="32" class="md:hidden" />
+							<Icon icon={skill.icon} width="40" height="40" class="hidden md:block" />
+							<span class="text-sm md:text-base text-gray-700">{skill.name}</span>
+						</div>
+					{/each}
+				</div>
+			{/each}
 		</div>
 	</div>
 </section>

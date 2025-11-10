@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { Menu, X } from 'lucide-svelte';
 	import { page } from '$app/state';
 	import Icon from '@iconify/svelte';
 	import { menuItems } from '$lib/data/menu';
+	import { githubLink, linkedinLink } from '$lib/data/links';
 
 	let mobileOpen = false;
 </script>
@@ -25,26 +25,26 @@
 
 			<!-- Right buttons -->
 			<div class="flex items-center gap-4 md:gap-6 md:justify-self-end">
-				<a href="https://github.com/" target="_blank" rel="noreferrer" class="inline-flex h-9 w-9 md:h-14 md:w-14 items-center justify-center rounded-full bg-white text-gray-700 hover:bg-gray-50">
+				<a href="/" target="_blank" rel="noreferrer" class="inline-flex h-9 w-9 md:h-14 md:w-14 items-center justify-center rounded-full bg-white text-gray-700 hover:bg-gray-50">
 					<Icon icon="mage:download" width="28" height="28" class="text-gray-700 md:hidden" />
 					<Icon icon="mage:download" width="42" height="42" class="text-gray-700 hidden md:block" />
 					<span class="sr-only">Resume</span>
 				</a>
-				<a href="https://github.com/" target="_blank" rel="noreferrer" class="inline-flex h-9 w-9 md:h-14 md:w-14 items-center justify-center rounded-full bg-white text-gray-700 hover:bg-gray-50">
+				<a href={githubLink} target="_blank" rel="noreferrer" class="inline-flex h-9 w-9 md:h-14 md:w-14 items-center justify-center rounded-full bg-white text-gray-700 hover:bg-gray-50">
 					<Icon icon="mage:github" width="28" height="28" class="text-gray-700 md:hidden" />
 					<Icon icon="mage:github" width="42" height="42" class="text-gray-700 hidden md:block" />
 					<span class="sr-only">GitHub</span>
 				</a>
-				<a href="https://www.linkedin.com/" target="_blank" rel="noreferrer" class="inline-flex h-9 w-9 md:h-14 md:w-14 items-center justify-center rounded-full bg-white text-gray-700 hover:bg-gray-50">
+				<a href={linkedinLink} target="_blank" rel="noreferrer" class="inline-flex h-9 w-9 md:h-14 md:w-14 items-center justify-center rounded-full bg-white text-gray-700 hover:bg-gray-50">
 					<Icon icon="mage:linkedin" width="28" height="28" class="text-gray-700 md:hidden" />
 					<Icon icon="mage:linkedin" width="42" height="42" class="text-gray-700 hidden md:block" />
 					<span class="sr-only">LinkedIn</span>
 				</a>
 				<button class="inline-flex h-9 w-9 items-center justify-center rounded-full border bg-white text-gray-700 hover:bg-gray-50 md:hidden" aria-expanded={mobileOpen} aria-controls="mobile-nav" on:click={() => (mobileOpen = !mobileOpen)}>
 					{#if mobileOpen}
-						<X size={18} />
+						<Icon icon="mdi:close" width="28" height="28" class="text-gray-700" />
 					{:else}
-						<Menu size={18} />
+						<Icon icon="mdi:menu" width="28" height="28" class="text-gray-700" />
 					{/if}
 					<span class="sr-only">Toggle navigation</span>
 				</button>
