@@ -6,11 +6,11 @@ export const makeAPACitation = (pub?: Publication) => {
 	if (!pub) return '';
 
 	// APA Format: Authors (Year). Title. Conference. DOI/URL
-	const authors = pub.authors || 'Unknown Author';
+	const authors = Array.isArray(pub.authors) ? pub.authors.join(', ') : (pub.authors || 'Unknown Author');
 	let citation = `${authors} (${pub.year}). ${pub.title}. `;
 
-	if (pub.conference) {
-		citation += `${pub.conference}. `;
+	if (pub.venue) {
+		citation += `${pub.venue}. `;
 	}
 
 	if (pub.links?.doi) {
@@ -26,11 +26,11 @@ export const makeMLACitation = (pub?: Publication) => {
 	if (!pub) return '';
 
 	// MLA Format: Authors. "Title." Conference, Year. DOI/URL
-	const authors = pub.authors || 'Unknown Author';
+	const authors = Array.isArray(pub.authors) ? pub.authors.join(', ') : (pub.authors || 'Unknown Author');
 	let citation = `${authors} "${pub.title}." `;
 
-	if (pub.conference) {
-		citation += `${pub.conference}, `;
+	if (pub.venue) {
+		citation += `${pub.venue}, `;
 	}
 
 	citation += `${pub.year}.`;
@@ -48,11 +48,11 @@ export const makeChicagoCitation = (pub?: Publication) => {
 	if (!pub) return '';
 
 	// Chicago Format: Authors. "Title." Conference (Year). DOI/URL
-	const authors = pub.authors || 'Unknown Author';
+	const authors = Array.isArray(pub.authors) ? pub.authors.join(', ') : (pub.authors || 'Unknown Author');
 	let citation = `${authors} "${pub.title}." `;
 
-	if (pub.conference) {
-		citation += `${pub.conference} `;
+	if (pub.venue) {
+		citation += `${pub.venue} `;
 	}
 
 	citation += `(${pub.year}).`;
@@ -70,11 +70,11 @@ export const makeIEEECitation= (pub?: Publication) => {
 	if (!pub) return '';
 
 	// IEEE Format: [1] Authors, "Title," Conference, Year. [Online]. Available: DOI/URL
-	const authors = pub.authors || 'Unknown Author';
+	const authors = Array.isArray(pub.authors) ? pub.authors.join(', ') : (pub.authors || 'Unknown Author');
 	let citation = `${authors}, "${pub.title}," `;
 
-	if (pub.conference) {
-		citation += `${pub.conference}, `;
+	if (pub.venue) {
+		citation += `${pub.venue}, `;
 	}
 
 	citation += `${pub.year}.`;
@@ -93,14 +93,14 @@ export const makeBibTeXCitation = (pub?: Publication) => {
 
 	// BibTeX Format
 	const slug = pub.slug || 'unknown';
-	const authors = pub.authors || 'Unknown Author';
+	const authors = Array.isArray(pub.authors) ? pub.authors.join(' and ') : (pub.authors || 'Unknown Author');
 
 	let bibtex = `@inproceedings{${slug}${pub.year},\n`;
 	bibtex += `  author = {${authors}},\n`;
 	bibtex += `  title = {${pub.title}},\n`;
 
-	if (pub.conference) {
-		bibtex += `  booktitle = {${pub.conference}},\n`;
+	if (pub.venue) {
+		bibtex += `  booktitle = {${pub.venue}},\n`;
 	}
 
 	bibtex += `  year = {${pub.year}}`;

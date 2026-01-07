@@ -22,7 +22,6 @@
 		"@tailwindcss/forms": "^0.5.10",
 		"@tailwindcss/typography": "^0.5.19",
 		"@tailwindcss/vite": "^4.1.17",
-		"@types/better-sqlite3": "^7.6.13",
 		"@types/node": "^24.10.0",
 		"eslint": "^9.39.1",
 		"eslint-config-prettier": "^10.1.8",
@@ -40,9 +39,7 @@
 		"vite": "^7.2.2"
 	},
 	"dependencies": {
-		"@iconify/svelte": "^5.1.0",
-		"better-sqlite3": "^12.4.1",
-		"zod": "^4.1.12"
+		"@iconify/svelte": "^5.1.0"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [

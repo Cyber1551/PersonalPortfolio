@@ -2,7 +2,7 @@
 	import { page } from '$app/state';
 	import Icon from '@iconify/svelte';
 	import { menuItems } from '$lib/data/menu';
-	import { githubLink, linkedinLink } from '$lib/data/links';
+	import { githubLink, linkedinLink, resumeLink } from '$lib/data/links';
 
 	let mobileOpen = false;
 </script>
@@ -25,7 +25,7 @@
 
 			<!-- Right buttons -->
 			<div class="flex items-center gap-4 md:gap-6 md:justify-self-end">
-				<a href="/" target="_blank" rel="noreferrer" class="inline-flex h-9 w-9 md:h-14 md:w-14 items-center justify-center rounded-full bg-white text-gray-700 hover:bg-gray-50">
+				<a href={resumeLink} target="_blank" rel="noreferrer" class="inline-flex h-9 w-9 md:h-14 md:w-14 items-center justify-center rounded-full bg-white text-gray-700 hover:bg-gray-50">
 					<Icon icon="mage:download" width="28" height="28" class="text-gray-700 md:hidden" />
 					<Icon icon="mage:download" width="42" height="42" class="text-gray-700 hidden md:block" />
 					<span class="sr-only">Resume</span>

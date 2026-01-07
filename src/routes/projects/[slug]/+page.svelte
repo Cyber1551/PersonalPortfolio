@@ -5,6 +5,17 @@
 
 	const slug = $derived(page.params.slug ?? '');
 	const project = $derived(getProjectBySlug(slug));
+
+	let activeImageIndex = $state(0);
+	const images = $derived(project?.images ?? []);
+
+	function nextImage() {
+		activeImageIndex = (activeImageIndex + 1) % images.length;
+	}
+
+	function prevImage() {
+		activeImageIndex = (activeImageIndex - 1 + images.length) % images.length;
+	}
 </script>
 
 <svelte:head>
@@ -12,63 +23,243 @@
 	<meta name="description" content={project ? project.summary : 'Project details'} />
 </svelte:head>
 
-<section class="w-full px-4 md:px-[10vw] flex-1 min-h-0 py-8 md:py-10">
-	<a href="/projects" class="justify-self-start inline-flex items-center gap-2 text-sm md:text-base text-gray-700 hover:text-gray-900">
-		<Icon icon="mage:chevron-left" width="18" height="18" />
-		<span>Back to Projects</span>
-	</a>
+<section class="flex h-full flex-1 flex-col overflow-hidden px-4 py-4 md:px-[10vw] md:py-6">
+	<!-- Navigation -->
+	<nav class="mb-4 shrink-0">
+		<a
+			href="/projects"
+			class="inline-flex items-center gap-2 text-sm text-gray-700 transition-colors hover:text-gray-900 md:text-base"
+		>
+			<Icon icon="mage:chevron-left" width="18" height="18" />
+			<span>Back to Projects</span>
+		</a>
+	</nav>
 
 	{#if project}
-		<header class="mt-4 md:mt-6">
-			<h1 class="text-2xl md:text-4xl font-bold tracking-tight text-gray-900">{project.title}</h1>
-			<div class="mt-3 flex flex-wrap items-center gap-2 text-sm">
-				{#if project.year}
-					<span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-gray-700 ring-1 ring-black/5">{project.year}</span>
-				{/if}
-				{#each project.tags as tag}
-					<span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-gray-700 ring-1 ring-black/5">{tag}</span>
-				{/each}
+		<div class="grid min-h-0 flex-1 gap-8 md:grid-cols-[1.2fr_1fr] md:gap-12">
+			<!-- Left Column: Info and Overview -->
+			<div class="flex min-h-0 flex-col">
+				<header class="shrink-0">
+					<div class="flex items-center gap-3">
+						{#if project.year}
+							<span
+								class="inline-flex items-center rounded-full bg-blue-50 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-blue-700 uppercase"
+							>
+								{project.year}
+							</span>
+						{/if}
+						<h1 class="text-2xl font-black tracking-tight text-gray-900 md:text-4xl">
+							{project.title}
+						</h1>
+					</div>
+
+					{#if project.tags?.length}
+						<div class="mt-3 flex flex-wrap gap-x-2 gap-y-1">
+							{#each project.tags as tag, i}
+								<span class="text-xs font-bold whitespace-nowrap text-gray-500 uppercase tracking-widest"
+									>{tag}</span
+								>
+								{#if i < project.tags.length - 1}
+									<span class="text-[10px] text-gray-300">•</span>
+								{/if}
+							{/each}
+						</div>
+					{/if}
+
+					<p class="mt-4 text-sm leading-relaxed text-gray-600 md:text-base">
+						{project.summary}
+					</p>
+
+					<!-- Actions -->
+					<div class="mt-6 flex flex-wrap items-center gap-2">
+						{#if project.links?.demo}
+							<a
+								href={project.links.demo}
+								target="_blank"
+								rel="noreferrer"
+								class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow-md transition hover:bg-blue-500 md:text-sm"
+							>
+								<Icon icon="mage:external-link" width="16" height="16" />
+								<span>Live Demo</span>
+							</a>
+						{/if}
+						{#if project.links?.github}
+							<a
+								href={project.links.github}
+								target="_blank"
+								rel="noreferrer"
+								class="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-xs font-bold text-white shadow-md transition hover:bg-gray-800 md:text-sm"
+							>
+								<Icon icon="mage:github" width="16" height="16" />
+								<span>Source Code</span>
+							</a>
+						{/if}
+						{#if project.links?.youtube}
+							<a
+								href={project.links.youtube}
+								target="_blank"
+								rel="noreferrer"
+								class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50 md:text-sm"
+							>
+								<Icon icon="logos:youtube-icon" width="16" height="16" />
+								<span>Video</span>
+							</a>
+						{/if}
+						{#if project.links?.devlog}
+							<a
+								href={project.links.devlog}
+								class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50 md:text-sm"
+							>
+								<Icon icon="mage:hash" width="16" height="16" />
+								<span>DevLog</span>
+							</a>
+						{/if}
+					</div>
+				</header>
+
+				<!-- Scrollable Overview -->
+				<div class="mt-8 flex min-h-0 flex-1 flex-col">
+					<h2 class="mb-4 shrink-0 text-lg font-bold uppercase tracking-widest text-gray-900">
+						Project Overview
+					</h2>
+					<div class="flex-1 overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-gray-200 mb-10">
+						<article class="prose prose-zinc prose-sm max-w-none md:prose-base">
+							{#if project.overview}
+								<p>{project.overview}</p>
+							{:else}
+								<p class="italic text-gray-500">
+									Full technical case study, architecture diagrams, and development insights are being
+									compiled. Check back soon for the complete write-up.
+								</p>
+							{/if}
+							<div class="h-20"></div>
+						</article>
+					</div>
+				</div>
 			</div>
 
-			<!-- Actions -->
-			<div class="mt-4 flex flex-wrap items-center gap-3">
-				{#if project.links?.demo}
-					<a href={project.links.demo} target="_blank" rel="noreferrer" class="inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-2 text-sm md:text-base font-medium text-white shadow-sm ring-1 ring-inset ring-blue-700/20 transition hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">
-						<Icon icon="mage:external-link" width="18" height="18" />
-						<span>Live Demo</span>
-					</a>
-				{/if}
-				{#if project.links?.github}
-					<a href={project.links.github} target="_blank" rel="noreferrer" class="inline-flex items-center gap-2 rounded-full border px-5 py-2 text-sm md:text-base font-medium text-gray-800 shadow-sm transition hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400">
-						<Icon icon="mage:github" width="18" height="18" />
-						<span>GitHub</span>
-					</a>
-				{/if}
+			<!-- Right Column: Carousel and Tech Stack -->
+			<div class="flex min-h-0 flex-col gap-8">
+				<!-- Carousel -->
+				<div
+					class="relative shrink-0 overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-black/5"
+				>
+					<div class="relative aspect-16/10 w-full overflow-hidden bg-gray-100">
+						{#if images.length > 0}
+							{@const currentImage = images[activeImageIndex]}
+							<img
+								src={currentImage.path}
+								alt={project.title}
+								class="h-full w-full object-cover"
+								style="object-position: {currentImage.offset?.x ?? 50}% {currentImage.offset?.y ?? 50}%"
+							/>
+
+							{#if images.length > 1}
+								<button
+									onclick={prevImage}
+									class="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm transition hover:bg-black/50"
+									aria-label="Previous image"
+								>
+									<Icon icon="mage:chevron-left" width="20" height="20" />
+								</button>
+								<button
+									onclick={nextImage}
+									class="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm transition hover:bg-black/50"
+									aria-label="Next image"
+								>
+									<Icon icon="mage:chevron-right" width="20" height="20" />
+								</button>
+							{/if}
+						{:else}
+							<div
+								class="flex h-full w-full items-center justify-center bg-linear-to-br from-blue-50 to-indigo-50"
+							>
+								<Icon icon="mage:box-3d" width="48" height="48" class="text-blue-200" />
+							</div>
+						{/if}
+					</div>
+
+					{#if images.length > 1}
+						<!-- Carousel Controls Bar -->
+						<div
+							class="flex items-center justify-between border-t border-black/5 bg-gray-50/50 px-4 py-3 backdrop-blur-sm"
+						>
+							<div class="flex items-center gap-2">
+								<span class="text-[10px] font-black uppercase tracking-widest text-gray-400">
+									Gallery
+								</span>
+								<span
+									class="rounded-full bg-gray-200 px-2 py-0.5 text-[10px] font-bold text-gray-700"
+								>
+									{activeImageIndex + 1} / {images.length}
+								</span>
+							</div>
+
+							<div class="flex gap-1.5">
+								{#each images as _, i}
+									<button
+										onclick={() => (activeImageIndex = i)}
+										class="h-1.5 rounded-full transition-all {i === activeImageIndex
+											? 'w-6 bg-blue-600'
+											: 'w-1.5 bg-gray-300 hover:bg-gray-400'}"
+										aria-label={`Go to image ${i + 1}`}
+									></button>
+								{/each}
+							</div>
+						</div>
+					{/if}
+				</div>
+
+				<!-- Sidebar: Tech Stack -->
+				<div class="flex min-h-0 flex-1 flex-col rounded-2xl bg-gray-50 p-6 ring-1 ring-black/5 mb-10">
+					<h3 class="mb-4 shrink-0 text-lg font-bold uppercase tracking-widest text-gray-900">
+						Tech Stack
+					</h3>
+					<div class="flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-200">
+						<div class="grid grid-cols-2 gap-3">
+							{#each project.tech as t (t.name)}
+								<div
+									class="flex items-center gap-2.5 rounded-xl border border-black/5 bg-white p-2.5 transition hover:shadow-sm"
+								>
+									<Icon icon={t.icon} width="20" height="20" class="shrink-0" />
+									<span class="text-xs font-bold text-gray-700">{t.name}</span>
+								</div>
+							{/each}
+						</div>
+					</div>
+				</div>
 			</div>
-		</header>
-
-		<div class="mt-6 grid gap-6 md:grid-cols-[1.2fr_1fr] md:gap-10">
-			<!-- Overview -->
-			<article class="prose prose-zinc max-w-none md:prose-lg">
-				<h2>Overview</h2>
-				<p>{project.summary}</p>
-				<p class="text-gray-500">More details coming soon. This page is a scaffold ready for screenshots, architecture diagrams, and writeups.</p>
-			</article>
-
-			<!-- Tech stack -->
-			<aside class="rounded-2xl bg-gray-50 p-4 md:p-6 ring-1 ring-black/5">
-				<h3 class="text-base md:text-lg font-semibold text-gray-900">Tech</h3>
-				<ul class="mt-3 flex flex-wrap gap-2">
-					{#each project.tech as t (t.name)}
-						<li class="inline-flex items-center gap-2 rounded-full bg-white px-3 py-1.5 text-sm text-gray-700 ring-1 ring-black/5">
-							<Icon icon={t.icon} width="18" height="18" class="text-gray-600" />
-							<span>{t.name}</span>
-						</li>
-					{/each}
-				</ul>
-			</aside>
 		</div>
 	{:else}
-		<p class="mt-10 text-center text-gray-500">Project not found. <a href="/projects" class="text-blue-600 hover:underline">Back to list</a></p>
+		<div class="flex flex-col items-center justify-center py-20 text-center">
+			<div class="rounded-full bg-red-50 p-6 text-red-500">
+				<Icon icon="mage:box-3d-off" width="64" height="64" />
+			</div>
+			<h2 class="mt-6 text-2xl font-bold text-gray-900">Project not found</h2>
+			<p class="mt-2 text-gray-600">The project you are looking for doesn't exist or has been moved.</p>
+			<a
+				href="/projects"
+				class="mt-8 rounded-full bg-gray-900 px-8 py-3 font-bold text-white transition hover:bg-gray-800"
+			>
+				Return to Projects
+			</a>
+		</div>
 	{/if}
 </section>
+
+<style>
+	/* Custom scrollbar styles for a cleaner look */
+	.scrollbar-thin::-webkit-scrollbar {
+		width: 4px;
+	}
+	.scrollbar-thin::-webkit-scrollbar-track {
+		background: transparent;
+	}
+	.scrollbar-thin::-webkit-scrollbar-thumb {
+		background: #e5e7eb;
+		border-radius: 10px;
+	}
+	.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+		background: #d1d5db;
+	}
+</style>

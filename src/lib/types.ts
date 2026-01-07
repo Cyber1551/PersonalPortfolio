@@ -13,16 +13,24 @@ export type SkillCategory = {
 export type Publication = {
 	title: string;
 	slug: string;
-	conference: string;
+	venue: string;
 	year: number;
-	authors: string;
+	authors: string[];
 	links: {
 		pdf?: string;
 		url?: string;
 		doi?: string;
+		arxiv?: string;
+		code?: string;
 	};
 	abstract?: string;
+	tags?: string[];
 	sort_order: number;
+};
+
+export type ProjectImage = {
+	path: string;
+	offset?: { x?: number; y?: number };
 };
 
 export type Project = {
@@ -30,11 +38,17 @@ export type Project = {
 	slug: string;
 	summary: string;
 	year?: number;
-	tech: string[];
+	tech: { name: string; icon: string }[];
 	tags: string[];
-	links?: string[];
-	image?: string;
+	links: {
+		demo?: string;
+		github?: string;
+		youtube?: string;
+		devlog?: string;
+	};
+	images: ProjectImage[];
 	featured?: boolean;
+	overview: string;
 };
 
 export type DevlogPost = {
@@ -44,4 +58,25 @@ export type DevlogPost = {
 	summary: string;
 	tags: string[];
 	content?: string[];
+};
+
+export type Experience = {
+	company: string;
+	role: string;
+	location: string;
+	start: string;
+	end: string;
+	description: string;
+	tech?: string[];
+	projects?: { name: string; slug: string }[];
+	publications?: { name: string; slug: string }[];
+};
+
+export type Education = {
+	school: string;
+	degree: string;
+	location: string;
+	start: string;
+	end: string;
+	description?: string;
 };

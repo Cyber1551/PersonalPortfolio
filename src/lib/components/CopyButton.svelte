@@ -32,21 +32,30 @@
 <button
 	type="button"
 	onclick={copyToClipboard}
-	class={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs md:text-sm font-medium shadow-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 ${
-		status === 'copied' ? 'bg-green-50 border-green-200 text-green-700' :
-		status === 'error' ? 'bg-red-50 border-red-200 text-red-700' :
-		'bg-white text-gray-800 hover:bg-gray-50'
+	class={`group flex h-8 min-w-[32px] items-center justify-center rounded-lg transition-all duration-300 ${
+		status === 'copied'
+			? 'bg-emerald-50 px-3 text-emerald-600 ring-1 ring-emerald-500/20'
+			: status === 'error'
+				? 'bg-red-50 px-3 text-red-600 ring-1 ring-red-500/20'
+				: 'bg-white text-gray-400 hover:bg-gray-50 hover:text-gray-900 ring-1 ring-black/5 shadow-xs'
 	} ${className}`}
 	disabled={status !== 'idle'}
+	title={status === 'copied' ? successMessage : 'Copy to clipboard'}
 >
-	{#if status === 'copied'}
-		<Icon icon="mage:check" width="16" height="16" />
-		<span>{successMessage}</span>
-	{:else if status === 'error'}
-		<Icon icon="mage:close" width="16" height="16" />
-		<span>Error</span>
-	{:else}
-		<Icon icon="mage:copy" width="16" height="16" />
-		<span>Copy</span>
-	{/if}
+	<div class="flex items-center gap-2">
+		{#if status === 'copied'}
+			<Icon icon="mage:check" width="16" height="16" />
+			<span class="text-[10px] font-black uppercase tracking-widest">Copied</span>
+		{:else if status === 'error'}
+			<Icon icon="mage:close" width="16" height="16" />
+			<span class="text-[10px] font-black uppercase tracking-widest">Error</span>
+		{:else}
+			<Icon
+				icon="mage:copy"
+				width="16"
+				height="16"
+				class="transition-transform group-hover:scale-110"
+			/>
+		{/if}
+	</div>
 </button>

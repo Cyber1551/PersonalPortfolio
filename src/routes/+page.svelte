@@ -11,7 +11,7 @@
 <section class="w-full px-4 md:px-[10vw] grid flex-1 min-h-0 place-content-center py-6 md:py-8 text-center">
 	<h1 class="text-6xl font-black tracking-tight text-gray-900 md:text-8xl">Hey, I'm Brandon Lacy</h1>
 	<p class="mt-6 text-2xl text-gray-700 md:text-3xl">{jobTitle} | {yearsOfExperience}</p>
-	<p class="mx-auto mt-6 max-w-2xl text-balance text-gray-600 text-base md:text-xl">{heroText}</p>
+	<i class="mx-auto mt-6 max-w-2xl text-balance text-gray-600 text-base md:text-xl">{heroText}</i>
 
 	<div class="mt-10 flex flex-wrap items-center justify-center gap-4 md:gap-5">
 		<a href="/projects" class="inline-flex items-center gap-2 md:gap-3 rounded-full bg-blue-600 px-6 py-3 md:px-8 md:py-4 text-base md:text-lg font-medium text-white shadow-sm ring-1 ring-inset ring-blue-700/20 transition hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">

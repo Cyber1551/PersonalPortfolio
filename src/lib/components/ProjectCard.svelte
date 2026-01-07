@@ -1,65 +1,139 @@
 <script lang="ts">
 	import Icon from '@iconify/svelte';
 	import type { Project } from '$lib/types';
-	const { project }: { project: Project} = $props();
+	const { project }: { project: Project } = $props();
+
+	const hasLinks = $derived(Object.values(project.links || {}).some((link) => link));
 </script>
 
-<article class="group relative flex flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-black/5 shadow-sm transition hover:shadow-md">
-	<!-- Image / placeholder -->
-	<div class="relative aspect-[16/9] w-full overflow-hidden bg-gradient-to-br from-blue-50 via-white to-indigo-50">
-		{#if project.image}
-			<img src={project.image} alt="" class="h-full w-full object-cover" loading="lazy" />
+<article
+	class="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-black/5 shadow-sm transition-all duration-500 hover:shadow-lg hover:-translate-y-0.5 focus-within:ring-2 focus-within:ring-blue-600"
+>
+	<!-- Image Section -->
+	<div class="relative aspect-16/10 w-full overflow-hidden bg-gray-100">
+		{#if project.images?.length}
+			{@const mainImage = project.images[0]}
+			<img
+				src={mainImage.path}
+				alt={project.title}
+				class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-103"
+				style="object-position: {mainImage.offset?.x ?? 50}% {mainImage.offset?.y ?? 50}%"
+				loading="lazy"
+			/>
 		{:else}
-			<!-- subtle placeholder pattern -->
-			<div class="absolute inset-0 opacity-70 [background-image:radial-gradient(circle_at_1px_1px,theme(colors.blue.200/50)_1px,transparent_0)] [background-size:20px_20px]"></div>
+			<div
+				class="flex h-full w-full items-center justify-center bg-linear-to-br from-blue-50 to-indigo-50"
+			>
+				<Icon icon="mage:box-3d" width="48" height="48" class="text-blue-200" />
+			</div>
 		{/if}
-		<div class="pointer-events-none absolute inset-0 ring-1 ring-inset ring-black/5"></div>
+
+		{#if project.year}
+			<div class="absolute top-3 right-3 z-10">
+				<span
+					class="rounded-full bg-black/50 px-2.5 py-1 text-[10px] font-semibold text-white backdrop-blur-md ring-1 ring-white/20"
+				>
+					{project.year}
+				</span>
+			</div>
+		{/if}
 	</div>
 
-	<!-- Body -->
-	<div class="flex flex-1 flex-col gap-3 p-4 md:p-5">
-		<header class="space-y-1">
-			<h3 class="text-base md:text-lg font-semibold text-gray-900">{project.title}</h3>
-			{#if project.year}
-				<p class="text-xs md:text-sm text-gray-500">{project.year}</p>
-			{/if}
-		</header>
-		<p class="text-sm md:text-base text-gray-700 line-clamp-3">{project.summary}</p>
+	<!-- Content Section -->
+	<div class="flex flex-1 flex-col p-5">
+		<div class="mb-3">
+			<h3 class="text-lg font-bold text-gray-900 transition-colors group-hover:text-blue-600">
+				<a href={`/projects/${project.slug}`} class="focus:outline-none">
+					<span class="absolute inset-0 z-0" aria-hidden="true"></span>
+					{project.title}
+				</a>
+			</h3>
 
-		<!-- Tech badges -->
+			{#if project.tags?.length}
+				<div class="mt-1.5 flex flex-wrap gap-1.5">
+					{#each project.tags as tag, i}
+						<span class="text-[10px] font-bold uppercase tracking-wider text-blue-600/80">
+							{tag}
+						</span>
+						{#if i < project.tags.length - 1}
+							<span class="text-[10px] text-gray-300">•</span>
+						{/if}
+					{/each}
+				</div>
+			{/if}
+		</div>
+
+		<p class="mb-4 text-sm leading-relaxed text-gray-600 line-clamp-3">
+			{project.summary}
+		</p>
+
+		<!-- Tech stack -->
 		{#if project.tech?.length}
-			<ul class="mt-1 flex flex-wrap gap-2">
-				{#each project.tech.slice(0, 5) as t (t.name)}
-					<li class="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-xs md:text-sm text-gray-700 ring-1 ring-black/5">
-						<Icon icon={t.icon} width="16" height="16" class="text-gray-600" />
+			<div class="mb-6 flex flex-wrap gap-2">
+				{#each project.tech.slice(0, 5) as t}
+					<div
+						class="inline-flex items-center gap-1.5 rounded-md bg-gray-50 px-2 py-1 text-[10px] font-bold text-gray-600 ring-1 ring-black/5"
+						title={t.name}
+					>
+						<Icon icon={t.icon} width="14" height="14" class="shrink-0" />
 						<span>{t.name}</span>
-					</li>
+					</div>
 				{/each}
-			</ul>
+				{#if project.tech.length > 5}
+					<span class="text-xs font-medium text-gray-400">+{project.tech.length - 5}</span>
+				{/if}
+			</div>
 		{/if}
 
 		<!-- Spacer -->
 		<div class="flex-1"></div>
 
 		<!-- Actions -->
-		<div class="flex items-center gap-2">
-			{#if project.links?.demo}
-				<a href={project.links.demo} target="_blank" rel="noreferrer"
-					class="inline-flex items-center gap-1 rounded-full bg-blue-600 px-3 py-1.5 text-xs md:text-sm font-medium text-white shadow-sm ring-1 ring-inset ring-blue-700/20 transition hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">
-					<Icon icon="mage:external-link" width="16" height="16" />
-					<span>Live Demo</span>
-				</a>
-			{/if}
-			{#if project.links?.github}
-				<a href={project.links.github} target="_blank" rel="noreferrer"
-					class="inline-flex items-center gap-1 rounded-full border px-3 py-1.5 text-xs md:text-sm font-medium text-gray-800 shadow-sm transition hover:bg-gray-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-400">
-					<Icon icon="mage:github" width="16" height="16" />
-					<span>GitHub</span>
-				</a>
-			{/if}
-		</div>
+		{#if hasLinks}
+			<div class="relative z-10 flex flex-wrap gap-2 pt-4 border-t border-gray-100">
+				{#if project.links?.demo}
+					<a
+						href={project.links.demo}
+						target="_blank"
+						rel="noreferrer"
+						class="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+					>
+						<Icon icon="mage:external-link" width="14" height="14" />
+						<span>Demo</span>
+					</a>
+				{/if}
+				{#if project.links?.github}
+					<a
+						href={project.links.github}
+						target="_blank"
+						rel="noreferrer"
+						class="inline-flex items-center gap-1.5 rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
+					>
+						<Icon icon="mage:github" width="14" height="14" />
+						<span>Code</span>
+					</a>
+				{/if}
+				{#if project.links?.youtube}
+					<a
+						href={project.links.youtube}
+						target="_blank"
+						rel="noreferrer"
+						class="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-bold text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2"
+					>
+						<Icon icon="logos:youtube-icon" width="14" height="14" />
+						<span>Video</span>
+					</a>
+				{/if}
+				{#if project.links?.devlog}
+					<a
+						href={project.links.devlog}
+						class="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-bold text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2"
+					>
+						<Icon icon="mage:hash" width="14" height="14" />
+						<span>DevLog</span>
+					</a>
+				{/if}
+			</div>
+		{/if}
 	</div>
-
-	<!-- hover ring -->
-	<div class="pointer-events-none absolute inset-0 rounded-2xl ring-1 ring-transparent group-hover:ring-black/10"></div>
 </article>
