@@ -1,7 +1,12 @@
 <script lang="ts">
+	import type { PageData } from './$types';
 	import Icon from '@iconify/svelte';
-	import { contactEmail, githubLink, linkedinLink } from '$lib/data/links';
 	import CopyButton from '$lib/components/CopyButton.svelte';
+
+	let { data }: { data: PageData } = $props();
+	const contactEmail = data.contactEmail;
+	const githubLink = data.githubLink;
+	const linkedinLink = data.linkedinLink;
 </script>
 
 <svelte:head>

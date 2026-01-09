@@ -1,9 +1,10 @@
 import type { PageLoad } from './$types';
-import { publications, allTags } from '$lib/data/publications';
+import { projects, allTags, allTech } from '$lib/data/projects';
 
 export const load: PageLoad = async () => {
 	return {
-		publications,
-		allTags
+		projects,
+		allTags,
+		allTech
 	};
 };

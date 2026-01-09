@@ -59,24 +59,3 @@ export type DevlogPost = {
 	tags: string[];
 	content?: string[];
 };
-
-export type Experience = {
-	company: string;
-	role: string;
-	location: string;
-	start: string;
-	end: string;
-	description: string;
-	tech?: string[];
-	projects?: { name: string; slug: string }[];
-	publications?: { name: string; slug: string }[];
-};
-
-export type Education = {
-	school: string;
-	degree: string;
-	location: string;
-	start: string;
-	end: string;
-	description?: string;
-};

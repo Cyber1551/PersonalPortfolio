@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
 	import type { PageData } from './$types';
+	import Icon from '@iconify/svelte';
 	import CopyButton from '$lib/components/CopyButton.svelte';
 	import {
 		makeAPACitation,

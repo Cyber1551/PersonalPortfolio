@@ -1,18 +1,12 @@
 <script lang="ts">
+	import type { PageData } from './$types';
   import type { DevlogPost } from '$lib/types';
-	import { devPosts } from '$lib/data/devlog';
+	import { formatDate } from '$lib/helpers/dates';
+
+	let { data }: { data: PageData } = $props();
 
   // newest first
-  const posts: DevlogPost[] = $derived([...devPosts].sort((a, b) => b.date.localeCompare(a.date)));
-
-  function formatDate(iso: string) {
-    try {
-      const d = new Date(iso);
-      return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(d);
-    } catch {
-      return iso;
-    }
-  }
+  const posts: DevlogPost[] = $derived([...data.devPosts].sort((a, b) => b.date.localeCompare(a.date)));
 </script>
 
 <svelte:head>

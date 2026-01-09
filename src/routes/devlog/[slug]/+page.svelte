@@ -1,19 +1,10 @@
 <script lang="ts">
+	import type { PageData } from './$types';
   import Icon from '@iconify/svelte';
-  import { page } from '$app/state';
-  import { getPostBySlug } from '$lib/data/devlog';
+	import { formatDate } from '$lib/helpers/dates';
 
-  const slug = $derived(page.params.slug ?? '');
-  const post = $derived(getPostBySlug(slug));
-
-  function formatDate(iso: string) {
-    try {
-      const d = new Date(iso);
-      return new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: '2-digit' }).format(d);
-    } catch {
-      return iso;
-    }
-  }
+	let { data }: { data: PageData } = $props();
+	const post = $derived(data.post);
 </script>
 
 <svelte:head>

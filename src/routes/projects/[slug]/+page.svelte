@@ -1,10 +1,8 @@
 <script lang="ts">
+	import type { PageData } from './$types';
 	import Icon from '@iconify/svelte';
-	import { page } from '$app/state';
-	import { getProjectBySlug } from '$lib/data/projects';
-
-	const slug = $derived(page.params.slug ?? '');
-	const project = $derived(getProjectBySlug(slug));
+	let { data }: { data: PageData} = $props();
+	const project = $derived(data.project);
 
 	let activeImageIndex = $state(0);
 	const images = $derived(project?.images ?? []);
@@ -216,7 +214,7 @@
 						Tech Stack
 					</h3>
 					<div class="flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-200">
-						<div class="grid grid-cols-2 gap-3">
+						<div class="grid grid-cols-4 gap-3">
 							{#each project.tech as t (t.name)}
 								<div
 									class="flex items-center gap-2.5 rounded-xl border border-black/5 bg-white p-2.5 transition hover:shadow-sm"
