@@ -7,7 +7,7 @@ export const load: PageLoad = async ({ params }) => {
 	if (!publication) {
 		error(404, {
 			message: `Publication "${params.slug}" not found`
-		})
+		});
 	}
 	return {
 		publication

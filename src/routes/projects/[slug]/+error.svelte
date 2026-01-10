@@ -1,5 +1,5 @@
 <script>
-import Icon from '@iconify/svelte';
+	import Icon from '@iconify/svelte';
 </script>
 
 <div class="flex flex-col items-center justify-center py-20 text-center">

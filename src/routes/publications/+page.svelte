@@ -15,7 +15,6 @@
 			tags: (p, selected) => selected.size === 0 || [...selected].every((t) => p.tags?.includes(t))
 		}
 	});
-
 </script>
 
 <svelte:head>
@@ -72,7 +71,7 @@
 			<button
 				type="button"
 				onclick={() => (manager.visible += LIST_SIZE)}
-				class="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm ring-1 ring-emerald-700/20 ring-inset transition hover:bg-emerald-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 md:text-base"
+				class="inline-flex items-center gap-2 rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm ring-1 ring-emerald-700/20 transition ring-inset hover:bg-emerald-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 md:text-base"
 			>
 				<Icon icon="mage:chevron-down" width="18" height="18" />
 				<span>Show more</span>

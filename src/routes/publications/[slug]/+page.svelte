@@ -13,18 +13,20 @@
 	const pub = $derived(data.publication);
 
 	const citations = $derived([
-		{ name: "IEEE", text: makeIEEECitation(pub) },
-		{ name: "APA", text: makeAPACitation(pub) },
-		{ name: "BibTex", text: makeBibTeXCitation(pub) },
-		{ name: "MLA", text: makeMLACitation(pub) },
-		{ name: "Chicago", text: makeChicagoCitation(pub) },
+		{ name: 'IEEE', text: makeIEEECitation(pub) },
+		{ name: 'APA', text: makeAPACitation(pub) },
+		{ name: 'BibTex', text: makeBibTeXCitation(pub) },
+		{ name: 'MLA', text: makeMLACitation(pub) },
+		{ name: 'Chicago', text: makeChicagoCitation(pub) }
 	]);
-
 </script>
 
 <svelte:head>
 	<title>{pub ? `${pub.title} | Publications | Brandon Lacy` : 'Publication | Brandon Lacy'}</title>
-	<meta name="description" content={pub ? pub.abstract ?? `${pub.title} — ${pub.venue}` : 'Publication details'} />
+	<meta
+		name="description"
+		content={pub ? (pub.abstract ?? `${pub.title} — ${pub.venue}`) : 'Publication details'}
+	/>
 </svelte:head>
 
 <section class="flex h-full flex-1 flex-col overflow-hidden px-4 py-4 md:px-[10vw] md:py-6">
@@ -55,14 +57,15 @@
 						</h1>
 					</div>
 
-					<p class="mt-3 text-sm font-bold text-gray-500 uppercase tracking-widest">
+					<p class="mt-3 text-sm font-bold tracking-widest text-gray-500 uppercase">
 						{pub.authors.join(', ')}
 					</p>
 
 					{#if pub.tags?.length}
 						<div class="mt-3 flex flex-wrap gap-x-2 gap-y-1">
-							{#each pub.tags as tag, i}
-								<span class="text-xs font-bold whitespace-nowrap text-gray-400 uppercase tracking-widest"
+							{#each pub.tags as tag, i (tag)}
+								<span
+									class="text-xs font-bold tracking-widest whitespace-nowrap text-gray-400 uppercase"
 									>{tag}</span
 								>
 								{#if i < pub.tags.length - 1}
@@ -72,7 +75,7 @@
 						</div>
 					{/if}
 
-					<p class="mt-4 text-sm leading-relaxed text-gray-600 md:text-base italic">
+					<p class="mt-4 text-sm leading-relaxed text-gray-600 italic md:text-base">
 						{pub.venue}
 					</p>
 
@@ -82,7 +85,7 @@
 							<a
 								href={pub.links.pdf}
 								target="_blank"
-								rel="noreferrer"
+								rel="noopener noreferrer"
 								class="inline-flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white shadow-md transition hover:bg-emerald-500 md:text-sm"
 							>
 								<Icon icon="mage:file-fill" width="16" height="16" />
@@ -93,7 +96,7 @@
 							<a
 								href={pub.links.doi}
 								target="_blank"
-								rel="noreferrer"
+								rel="noopener noreferrer"
 								class="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-xs font-bold text-white shadow-md transition hover:bg-gray-800 md:text-sm"
 							>
 								<Icon icon="mage:external-link" width="16" height="16" />
@@ -104,7 +107,7 @@
 							<a
 								href={pub.links.url}
 								target="_blank"
-								rel="noreferrer"
+								rel="noopener noreferrer"
 								class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50 md:text-sm"
 							>
 								<Icon icon="mage:external-link" width="16" height="16" />
@@ -115,7 +118,7 @@
 							<a
 								href={pub.links.arxiv}
 								target="_blank"
-								rel="noreferrer"
+								rel="noopener noreferrer"
 								class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50 md:text-sm"
 							>
 								<Icon icon="mage:external-link" width="16" height="16" />
@@ -126,7 +129,7 @@
 							<a
 								href={pub.links.code}
 								target="_blank"
-								rel="noreferrer"
+								rel="noopener noreferrer"
 								class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50 md:text-sm"
 							>
 								<Icon icon="mage:github" width="16" height="16" />
@@ -138,11 +141,11 @@
 
 				<!-- Scrollable Abstract -->
 				<div class="mt-8 flex min-h-0 flex-1 flex-col">
-					<h2 class="mb-4 shrink-0 text-lg font-bold uppercase tracking-widest text-gray-900">
+					<h2 class="mb-4 shrink-0 text-lg font-bold tracking-widest text-gray-900 uppercase">
 						Abstract
 					</h2>
-					<div class="flex-1 overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-gray-200 mb-10">
-						<article class="prose prose-zinc prose-sm max-w-none md:prose-base">
+					<div class="scrollbar-thin scrollbar-thumb-gray-200 mb-10 flex-1 overflow-y-auto pr-4">
+						<article class="prose prose-sm max-w-none prose-zinc md:prose-base">
 							<p>{pub.abstract ?? 'Abstract coming soon.'}</p>
 							<div class="h-20"></div>
 						</article>
@@ -153,24 +156,27 @@
 			<!-- Right Column: Citations -->
 			<div class="flex min-h-0 flex-col gap-8">
 				<!-- Sidebar: Citations -->
-				<div class="flex min-h-0 flex-1 flex-col rounded-2xl bg-gray-50 p-6 ring-1 ring-black/5 mb-10">
-					<h3 class="mb-4 shrink-0 text-lg font-bold uppercase tracking-widest text-gray-900">
+				<div
+					class="mb-10 flex min-h-0 flex-1 flex-col rounded-2xl bg-gray-50 p-6 ring-1 ring-black/5"
+				>
+					<h3 class="mb-4 shrink-0 text-lg font-bold tracking-widest text-gray-900 uppercase">
 						Citations
 					</h3>
-					<div class="flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-200">
+					<div class="scrollbar-thin scrollbar-thumb-gray-200 flex-1 overflow-y-auto pr-2">
 						<div class="space-y-6">
 							{#each citations as citation (citation.name)}
 								<div class="space-y-2">
 									<div class="flex items-center justify-between">
-										<span class="text-xs font-black uppercase tracking-widest text-emerald-600"
+										<span class="text-xs font-black tracking-widest text-emerald-600 uppercase"
 											>{citation.name}</span
 										>
 										<CopyButton text={citation.text} />
 									</div>
 									<div class="rounded-xl border border-black/5 bg-white p-3 shadow-sm">
 										<pre
-											class="whitespace-pre-wrap break-all text-[10px] leading-relaxed text-gray-600"
-										><code>{citation.text}</code></pre>
+											class="text-[10px] leading-relaxed break-all whitespace-pre-wrap text-gray-600"><code
+												>{citation.text}</code
+											></pre>
 									</div>
 								</div>
 							{/each}

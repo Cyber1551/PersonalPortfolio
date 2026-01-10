@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import Icon from '@iconify/svelte';
-	let { data }: { data: PageData} = $props();
+	let { data }: { data: PageData } = $props();
 	const project = $derived(data.project);
 
 	let activeImageIndex = $state(0);
@@ -53,8 +53,9 @@
 
 					{#if project.tags?.length}
 						<div class="mt-3 flex flex-wrap gap-x-2 gap-y-1">
-							{#each project.tags as tag, i}
-								<span class="text-xs font-bold whitespace-nowrap text-gray-500 uppercase tracking-widest"
+							{#each project.tags as tag, i (tag)}
+								<span
+									class="text-xs font-bold tracking-widest whitespace-nowrap text-gray-500 uppercase"
 									>{tag}</span
 								>
 								{#if i < project.tags.length - 1}
@@ -74,7 +75,7 @@
 							<a
 								href={project.links.demo}
 								target="_blank"
-								rel="noreferrer"
+								rel="noopener noreferrer"
 								class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow-md transition hover:bg-blue-500 md:text-sm"
 							>
 								<Icon icon="mage:external-link" width="16" height="16" />
@@ -85,7 +86,7 @@
 							<a
 								href={project.links.github}
 								target="_blank"
-								rel="noreferrer"
+								rel="noopener noreferrer"
 								class="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-xs font-bold text-white shadow-md transition hover:bg-gray-800 md:text-sm"
 							>
 								<Icon icon="mage:github" width="16" height="16" />
@@ -96,7 +97,7 @@
 							<a
 								href={project.links.youtube}
 								target="_blank"
-								rel="noreferrer"
+								rel="noopener noreferrer"
 								class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50 md:text-sm"
 							>
 								<Icon icon="logos:youtube-icon" width="16" height="16" />
@@ -117,17 +118,17 @@
 
 				<!-- Scrollable Overview -->
 				<div class="mt-8 flex min-h-0 flex-1 flex-col">
-					<h2 class="mb-4 shrink-0 text-lg font-bold uppercase tracking-widest text-gray-900">
+					<h2 class="mb-4 shrink-0 text-lg font-bold tracking-widest text-gray-900 uppercase">
 						Project Overview
 					</h2>
-					<div class="flex-1 overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-gray-200 mb-10">
-						<article class="prose prose-zinc prose-sm max-w-none md:prose-base">
+					<div class="scrollbar-thin scrollbar-thumb-gray-200 mb-10 flex-1 overflow-y-auto pr-4">
+						<article class="prose prose-sm max-w-none prose-zinc md:prose-base">
 							{#if project.overview}
 								<p>{project.overview}</p>
 							{:else}
-								<p class="italic text-gray-500">
-									Full technical case study, architecture diagrams, and development insights are being
-									compiled. Check back soon for the complete write-up.
+								<p class="text-gray-500 italic">
+									Full technical case study, architecture diagrams, and development insights are
+									being compiled. Check back soon for the complete write-up.
 								</p>
 							{/if}
 							<div class="h-20"></div>
@@ -149,20 +150,21 @@
 								src={currentImage.path}
 								alt={project.title}
 								class="h-full w-full object-cover"
-								style="object-position: {currentImage.offset?.x ?? 50}% {currentImage.offset?.y ?? 50}%"
+								style="object-position: {currentImage.offset?.x ?? 50}% {currentImage.offset?.y ??
+									50}%"
 							/>
 
 							{#if images.length > 1}
 								<button
 									onclick={prevImage}
-									class="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm transition hover:bg-black/50"
+									class="absolute top-1/2 left-2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm transition hover:bg-black/50"
 									aria-label="Previous image"
 								>
 									<Icon icon="mage:chevron-left" width="20" height="20" />
 								</button>
 								<button
 									onclick={nextImage}
-									class="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm transition hover:bg-black/50"
+									class="absolute top-1/2 right-2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm transition hover:bg-black/50"
 									aria-label="Next image"
 								>
 									<Icon icon="mage:chevron-right" width="20" height="20" />
@@ -183,7 +185,7 @@
 							class="flex items-center justify-between border-t border-black/5 bg-gray-50/50 px-4 py-3 backdrop-blur-sm"
 						>
 							<div class="flex items-center gap-2">
-								<span class="text-[10px] font-black uppercase tracking-widest text-gray-400">
+								<span class="text-[10px] font-black tracking-widest text-gray-400 uppercase">
 									Gallery
 								</span>
 								<span
@@ -194,7 +196,7 @@
 							</div>
 
 							<div class="flex gap-1.5">
-								{#each images as _, i}
+								{#each images as image, i (image.path)}
 									<button
 										onclick={() => (activeImageIndex = i)}
 										class="h-1.5 rounded-full transition-all {i === activeImageIndex
@@ -209,11 +211,13 @@
 				</div>
 
 				<!-- Sidebar: Tech Stack -->
-				<div class="flex min-h-0 flex-1 flex-col rounded-2xl bg-gray-50 p-6 ring-1 ring-black/5 mb-10">
-					<h3 class="mb-4 shrink-0 text-lg font-bold uppercase tracking-widest text-gray-900">
+				<div
+					class="mb-10 flex min-h-0 flex-1 flex-col rounded-2xl bg-gray-50 p-6 ring-1 ring-black/5"
+				>
+					<h3 class="mb-4 shrink-0 text-lg font-bold tracking-widest text-gray-900 uppercase">
 						Tech Stack
 					</h3>
-					<div class="flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-200">
+					<div class="scrollbar-thin scrollbar-thumb-gray-200 flex-1 overflow-y-auto pr-2">
 						<div class="grid grid-cols-4 gap-3">
 							{#each project.tech as t (t.name)}
 								<div
@@ -234,7 +238,9 @@
 				<Icon icon="mage:box-3d-off" width="64" height="64" />
 			</div>
 			<h2 class="mt-6 text-2xl font-bold text-gray-900">Project not found</h2>
-			<p class="mt-2 text-gray-600">The project you are looking for doesn't exist or has been moved.</p>
+			<p class="mt-2 text-gray-600">
+				The project you are looking for doesn't exist or has been moved.
+			</p>
 			<a
 				href="/projects"
 				class="mt-8 rounded-full bg-gray-900 px-8 py-3 font-bold text-white transition hover:bg-gray-800"

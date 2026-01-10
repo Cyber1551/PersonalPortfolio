@@ -5,7 +5,7 @@
 		selected: Set<string>;
 		onToggle: (item: string) => void;
 		activeClass?: string;
-	}
+	};
 
 	let {
 		label,
@@ -17,15 +17,18 @@
 </script>
 
 <div class="flex flex-col gap-3 md:flex-row md:items-center">
-	<span class="min-w-[60px] text-xs font-bold uppercase tracking-widest text-gray-400">{label}</span>
+	<span class="min-w-[60px] text-xs font-bold tracking-widest text-gray-400 uppercase">{label}</span
+	>
 	<div class="flex flex-wrap gap-2">
-		{#each items as item}
+		{#each items as item (item)}
 			<button
 				type="button"
 				onclick={() => onToggle(item)}
-				class="rounded-lg px-3 py-1.5 text-xs font-semibold transition-all shadow-sm {selected.has(item)
+				class="rounded-lg px-3 py-1.5 text-xs font-semibold shadow-sm transition-all {selected.has(
+					item
+				)
 					? `${activeClass} text-white shadow-md`
-					: 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:bg-gray-50'}"
+					: 'border border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50'}"
 			>
 				{item}
 			</button>

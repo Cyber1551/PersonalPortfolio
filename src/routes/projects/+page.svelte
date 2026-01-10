@@ -10,13 +10,14 @@
 	const LIST_SIZE = 6;
 
 	const manager = createCollectionManager(data.projects, {
-		searchFn: (p) => `${p.title} ${p.summary} ${p.tags.join(' ')} ${p.tech.map(t => t.name).join(' ')}`,
+		searchFn: (p) =>
+			`${p.title} ${p.summary} ${p.tags.join(' ')} ${p.tech.map((t) => t.name).join(' ')}`,
 		filterFns: {
-			tags: (p, selected) => selected.size === 0 || [...selected].every(t => p.tags.includes(t)),
-			tech: (p, selected) => selected.size === 0 || [...selected].every(t => p.tech.some(tech => tech.name === t))
+			tags: (p, selected) => selected.size === 0 || [...selected].every((t) => p.tags.includes(t)),
+			tech: (p, selected) =>
+				selected.size === 0 || [...selected].every((t) => p.tech.some((tech) => tech.name === t))
 		}
 	});
-
 </script>
 
 <svelte:head>
@@ -24,21 +25,23 @@
 	<meta name="description" content="Selected projects across full‑stack, hardware, and research." />
 </svelte:head>
 
-<section class="w-full px-4 md:px-[10vw] flex-1 min-h-0 py-8 md:py-10">
+<section class="min-h-0 w-full flex-1 px-4 py-8 md:px-[10vw] md:py-10">
 	<!-- Heading -->
 	<div class="text-center">
-		<h1 class="text-3xl md:text-5xl font-black tracking-tight text-gray-900">Projects</h1>
-		<p class="mt-3 text-gray-600 text-sm md:text-base">A growing collection of things I’ve worked on.</p>
+		<h1 class="text-3xl font-black tracking-tight text-gray-900 md:text-5xl">Projects</h1>
+		<p class="mt-3 text-sm text-gray-600 md:text-base">
+			A growing collection of things I’ve worked on.
+		</p>
 	</div>
 
 	<!-- Controls -->
 	<div class="mt-8 space-y-6">
-		<div class="flex flex-col md:flex-row gap-4 items-center">
+		<div class="flex flex-col items-center gap-4 md:flex-row">
 			<CollectionSearch
 				bind:value={manager.search}
 				placeholder="Search by name, tech, or description..."
 				label="Search projects"
-				/>
+			/>
 
 			{#if manager.hasActiveFilters}
 				<button
@@ -70,22 +73,26 @@
 	</div>
 
 	<!-- Grid -->
-	<div class="mt-6 md:mt-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+	<div
+		class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:mt-8 md:grid-cols-3 md:gap-6 xl:grid-cols-4"
+	>
 		{#each manager.filtered.slice(0, manager.visible) as p (p.slug)}
 			<ProjectCard project={p} />
 		{/each}
 	</div>
 
 	{#if manager.filtered.length > manager.visible}
-		<div class="mt-6 md:mt-8 flex justify-center">
-   <button type="button" onclick={() => (manager.visible += LIST_SIZE)} class="inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-2.5 text-sm md:text-base font-medium text-white shadow-sm ring-1 ring-inset ring-blue-700/20 transition hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600">
+		<div class="mt-6 flex justify-center md:mt-8">
+			<button
+				type="button"
+				onclick={() => (manager.visible += LIST_SIZE)}
+				class="inline-flex items-center gap-2 rounded-full bg-blue-600 px-5 py-2.5 text-sm font-medium text-white shadow-sm ring-1 ring-blue-700/20 transition ring-inset hover:bg-blue-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-600 md:text-base"
+			>
 				<Icon icon="mage:chevron-down" width="18" height="18" />
 				<span>Show more</span>
 			</button>
 		</div>
-	{:else}
-		{#if manager.filtered.length === 0}
-			<p class="mt-8 text-center text-gray-500">No projects match your filters.</p>
-		{/if}
+	{:else if manager.filtered.length === 0}
+		<p class="mt-8 text-center text-gray-500">No projects match your filters.</p>
 	{/if}
 </section>

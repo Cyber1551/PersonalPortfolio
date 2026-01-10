@@ -24,7 +24,7 @@ export const skillCategories: SkillCategory[] = [
 			{ name: 'Vue', icon: 'devicon:vuejs', sort_order: 16 },
 			{ name: 'Unity', icon: 'devicon:unity', sort_order: 17 }
 		]
-	},
+	}
 	// {
 	// 	name: 'Currently Learning',
 	// 	sort_order: 1,
