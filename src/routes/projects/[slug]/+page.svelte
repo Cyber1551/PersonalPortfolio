@@ -1,10 +1,9 @@
 <script lang="ts">
+	import type { PageData } from './$types';
 	import Icon from '@iconify/svelte';
-	import { page } from '$app/state';
-	import { getProjectBySlug } from '$lib/data/projects';
-
-	const slug = $derived(page.params.slug ?? '');
-	const project = $derived(getProjectBySlug(slug));
+	import { projectLinksConfig } from '$lib/data/projects';
+	let { data }: { data: PageData } = $props();
+	const project = $derived(data.project);
 
 	let activeImageIndex = $state(0);
 	const images = $derived(project?.images ?? []);
@@ -48,6 +47,15 @@
 								{project.year}
 							</span>
 						{/if}
+						{#if project.forked}
+							<span
+								class="inline-flex items-center gap-1 rounded-full bg-indigo-600 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-white uppercase shadow-sm ring-1 ring-white/10"
+								title="Contribution to a fork"
+							>
+								<Icon icon="mage:git-fork" width="12" height="12" />
+								<span>Forked</span>
+							</span>
+						{/if}
 						<h1 class="text-2xl font-black tracking-tight text-gray-900 md:text-4xl">
 							{project.title}
 						</h1>
@@ -55,8 +63,9 @@
 
 					{#if project.tags?.length}
 						<div class="mt-3 flex flex-wrap gap-x-2 gap-y-1">
-							{#each project.tags as tag, i}
-								<span class="text-xs font-bold whitespace-nowrap text-gray-500 uppercase tracking-widest"
+							{#each project.tags as tag, i (tag)}
+								<span
+									class="text-xs font-bold tracking-widest whitespace-nowrap text-gray-500 uppercase"
 									>{tag}</span
 								>
 								{#if i < project.tags.length - 1}
@@ -70,66 +79,36 @@
 						{project.summary}
 					</p>
 
-					<!-- Actions -->
 					<div class="mt-6 flex flex-wrap items-center gap-2">
-						{#if project.links?.demo}
+						{#each project.links as link (link.url)}
+							{@const config = data.projectLinksConfig[link.type]}
+							{@const isInternal = ['devlog', 'publication'].includes(link.type)}
 							<a
-								href={project.links.demo}
-								target="_blank"
-								rel="noreferrer"
-								class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow-md transition hover:bg-blue-500 md:text-sm"
+								href={link.url}
+								target={!isInternal ? '_blank' : undefined}
+								rel={!isInternal ? 'noopener noreferrer' : undefined}
+								class="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-bold transition md:text-sm {config.baseClass}"
 							>
-								<Icon icon="mage:external-link" width="16" height="16" />
-								<span>Live Demo</span>
+								<Icon icon={config.icon} width="16" height="16" />
+								<span>{link.label || config.label}</span>
 							</a>
-						{/if}
-						{#if project.links?.github}
-							<a
-								href={project.links.github}
-								target="_blank"
-								rel="noreferrer"
-								class="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-xs font-bold text-white shadow-md transition hover:bg-gray-800 md:text-sm"
-							>
-								<Icon icon="mage:github" width="16" height="16" />
-								<span>Source Code</span>
-							</a>
-						{/if}
-						{#if project.links?.youtube}
-							<a
-								href={project.links.youtube}
-								target="_blank"
-								rel="noreferrer"
-								class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50 md:text-sm"
-							>
-								<Icon icon="logos:youtube-icon" width="16" height="16" />
-								<span>Video</span>
-							</a>
-						{/if}
-						{#if project.links?.devlog}
-							<a
-								href={project.links.devlog}
-								class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50 md:text-sm"
-							>
-								<Icon icon="mage:hash" width="16" height="16" />
-								<span>DevLog</span>
-							</a>
-						{/if}
+						{/each}
 					</div>
 				</header>
 
 				<!-- Scrollable Overview -->
 				<div class="mt-8 flex min-h-0 flex-1 flex-col">
-					<h2 class="mb-4 shrink-0 text-lg font-bold uppercase tracking-widest text-gray-900">
+					<h2 class="mb-4 shrink-0 text-lg font-bold tracking-widest text-gray-900 uppercase">
 						Project Overview
 					</h2>
-					<div class="flex-1 overflow-y-auto pr-4 scrollbar-thin scrollbar-thumb-gray-200 mb-10">
-						<article class="prose prose-zinc prose-sm max-w-none md:prose-base">
-							{#if project.overview}
-								<p>{project.overview}</p>
+					<div class="scrollbar-thin scrollbar-thumb-gray-200 mb-10 flex-1 overflow-y-auto pr-4">
+						<article class="prose prose-sm max-w-none prose-zinc md:prose-base">
+							{#if data.overviewHtml}
+								{@html data.overviewHtml}
 							{:else}
-								<p class="italic text-gray-500">
-									Full technical case study, architecture diagrams, and development insights are being
-									compiled. Check back soon for the complete write-up.
+								<p class="text-gray-500 italic">
+									Full technical case study, architecture diagrams, and development insights are
+									being compiled. Check back soon for the complete write-up.
 								</p>
 							{/if}
 							<div class="h-20"></div>
@@ -145,26 +124,40 @@
 					class="relative shrink-0 overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-black/5"
 				>
 					<div class="relative aspect-16/10 w-full overflow-hidden bg-gray-100">
+						{#if project.forked}
+							<div class="absolute top-0 left-0 z-10 h-24 w-24 overflow-hidden">
+								<div
+									class="absolute top-6 -left-10 w-36 -rotate-45 bg-indigo-600 py-1.5 text-center text-xs font-black text-white shadow-indigo-500/50 shadow-lg ring-1 ring-white/20"
+									title="Contribution to a fork"
+								>
+									<div class="flex items-center justify-center gap-1.5 uppercase tracking-widest">
+										<Icon icon="mage:git-fork" width="14" height="14" />
+										<span>Forked</span>
+									</div>
+								</div>
+							</div>
+						{/if}
 						{#if images.length > 0}
 							{@const currentImage = images[activeImageIndex]}
 							<img
 								src={currentImage.path}
 								alt={project.title}
-								class="h-full w-full object-cover"
-								style="object-position: {currentImage.offset?.x ?? 50}% {currentImage.offset?.y ?? 50}%"
+								class="h-full w-full"
+								style="object-fit: {currentImage.offset?.fit ?? 'cover'}; object-position: {currentImage.offset?.x ?? 50}% {currentImage.offset?.y ??
+									50}%; transform: scale({currentImage.offset?.zoom ?? 1});"
 							/>
 
 							{#if images.length > 1}
 								<button
 									onclick={prevImage}
-									class="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm transition hover:bg-black/50"
+									class="absolute top-1/2 left-2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm transition hover:bg-black/50"
 									aria-label="Previous image"
 								>
 									<Icon icon="mage:chevron-left" width="20" height="20" />
 								</button>
 								<button
 									onclick={nextImage}
-									class="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm transition hover:bg-black/50"
+									class="absolute top-1/2 right-2 -translate-y-1/2 rounded-full bg-black/30 p-2 text-white backdrop-blur-sm transition hover:bg-black/50"
 									aria-label="Next image"
 								>
 									<Icon icon="mage:chevron-right" width="20" height="20" />
@@ -185,7 +178,7 @@
 							class="flex items-center justify-between border-t border-black/5 bg-gray-50/50 px-4 py-3 backdrop-blur-sm"
 						>
 							<div class="flex items-center gap-2">
-								<span class="text-[10px] font-black uppercase tracking-widest text-gray-400">
+								<span class="text-[10px] font-black tracking-widest text-gray-400 uppercase">
 									Gallery
 								</span>
 								<span
@@ -196,7 +189,7 @@
 							</div>
 
 							<div class="flex gap-1.5">
-								{#each images as _, i}
+								{#each images as image, i (image.path)}
 									<button
 										onclick={() => (activeImageIndex = i)}
 										class="h-1.5 rounded-full transition-all {i === activeImageIndex
@@ -211,12 +204,14 @@
 				</div>
 
 				<!-- Sidebar: Tech Stack -->
-				<div class="flex min-h-0 flex-1 flex-col rounded-2xl bg-gray-50 p-6 ring-1 ring-black/5 mb-10">
-					<h3 class="mb-4 shrink-0 text-lg font-bold uppercase tracking-widest text-gray-900">
+				<div
+					class="mb-10 flex min-h-0 flex-1 flex-col rounded-2xl bg-gray-50 p-6 ring-1 ring-black/5"
+				>
+					<h3 class="mb-4 shrink-0 text-lg font-bold tracking-widest text-gray-900 uppercase">
 						Tech Stack
 					</h3>
-					<div class="flex-1 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-200">
-						<div class="grid grid-cols-2 gap-3">
+					<div class="scrollbar-thin scrollbar-thumb-gray-200 flex-1 overflow-y-auto pr-2">
+						<div class="grid grid-cols-4 gap-3">
 							{#each project.tech as t (t.name)}
 								<div
 									class="flex items-center gap-2.5 rounded-xl border border-black/5 bg-white p-2.5 transition hover:shadow-sm"
@@ -236,7 +231,9 @@
 				<Icon icon="mage:box-3d-off" width="64" height="64" />
 			</div>
 			<h2 class="mt-6 text-2xl font-bold text-gray-900">Project not found</h2>
-			<p class="mt-2 text-gray-600">The project you are looking for doesn't exist or has been moved.</p>
+			<p class="mt-2 text-gray-600">
+				The project you are looking for doesn't exist or has been moved.
+			</p>
 			<a
 				href="/projects"
 				class="mt-8 rounded-full bg-gray-900 px-8 py-3 font-bold text-white transition hover:bg-gray-800"

@@ -1,13 +1,14 @@
 <script lang="ts">
-	import Icon from '@iconify/svelte';
+	import Icon from '@iconify/svelte'
 	import type { Project } from '$lib/types';
+	import { projectLinksConfig } from '$lib/data/projects';
 	const { project }: { project: Project } = $props();
 
-	const hasLinks = $derived(Object.values(project.links || {}).some((link) => link));
+	const hasLinks = $derived(project.links?.length > 0);
 </script>
 
 <article
-	class="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white ring-1 ring-black/5 shadow-sm transition-all duration-500 hover:shadow-lg hover:-translate-y-0.5 focus-within:ring-2 focus-within:ring-blue-600"
+	class="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 transition-all duration-500 focus-within:ring-2 focus-within:ring-blue-600 hover:-translate-y-0.5 hover:shadow-lg"
 >
 	<!-- Image Section -->
 	<div class="relative aspect-16/10 w-full overflow-hidden bg-gray-100">
@@ -16,8 +17,8 @@
 			<img
 				src={mainImage.path}
 				alt={project.title}
-				class="h-full w-full object-cover transition-transform duration-700 group-hover:scale-103"
-				style="object-position: {mainImage.offset?.x ?? 50}% {mainImage.offset?.y ?? 50}%"
+				class="project-image h-full w-full transition-all duration-700"
+				style="object-fit: {mainImage.offset?.fit ?? 'cover'}; object-position: {mainImage.offset?.x ?? 50}% {mainImage.offset?.y ?? 50}%; --zoom: {mainImage.offset?.zoom ?? 1};"
 				loading="lazy"
 			/>
 		{:else}
@@ -31,10 +32,24 @@
 		{#if project.year}
 			<div class="absolute top-3 right-3 z-10">
 				<span
-					class="rounded-full bg-black/50 px-2.5 py-1 text-[10px] font-semibold text-white backdrop-blur-md ring-1 ring-white/20"
+					class="rounded-full bg-black/50 px-2.5 py-1 text-[10px] font-semibold text-white ring-1 ring-white/20 backdrop-blur-md"
 				>
 					{project.year}
 				</span>
+			</div>
+		{/if}
+
+		{#if project.forked}
+			<div class="absolute top-0 left-0 z-10 h-20 w-20 overflow-hidden">
+				<div
+					class="absolute top-5 -left-8 w-28 -rotate-45 bg-indigo-600 py-1 text-center text-[10px] font-black text-white shadow-indigo-500/50 shadow-lg ring-1 ring-white/20"
+					title="Contribution to a fork"
+				>
+					<div class="flex items-center justify-center gap-1 uppercase tracking-wider">
+						<Icon icon="mage:git-fork" width="12" height="12" />
+						<span>Forked</span>
+					</div>
+				</div>
 			</div>
 		{/if}
 	</div>
@@ -51,8 +66,8 @@
 
 			{#if project.tags?.length}
 				<div class="mt-1.5 flex flex-wrap gap-1.5">
-					{#each project.tags as tag, i}
-						<span class="text-[10px] font-bold uppercase tracking-wider text-blue-600/80">
+					{#each project.tags as tag, i (tag)}
+						<span class="text-[10px] font-bold tracking-wider text-blue-600/80 uppercase">
 							{tag}
 						</span>
 						{#if i < project.tags.length - 1}
@@ -63,14 +78,14 @@
 			{/if}
 		</div>
 
-		<p class="mb-4 text-sm leading-relaxed text-gray-600 line-clamp-3">
+		<p class="mb-4 line-clamp-3 text-sm leading-relaxed text-gray-600">
 			{project.summary}
 		</p>
 
 		<!-- Tech stack -->
 		{#if project.tech?.length}
 			<div class="mb-6 flex flex-wrap gap-2">
-				{#each project.tech.slice(0, 5) as t}
+				{#each project.tech.slice(0, 5) as t (t.name)}
 					<div
 						class="inline-flex items-center gap-1.5 rounded-md bg-gray-50 px-2 py-1 text-[10px] font-bold text-gray-600 ring-1 ring-black/5"
 						title={t.name}
@@ -90,50 +105,31 @@
 
 		<!-- Actions -->
 		{#if hasLinks}
-			<div class="relative z-10 flex flex-wrap gap-2 pt-4 border-t border-gray-100">
-				{#if project.links?.demo}
+			<div class="relative z-10 flex flex-wrap gap-2 border-t border-gray-100 pt-4">
+				{#each project.links as link (link.url)}
+					{@const config = projectLinksConfig[link.type]}
+					{@const isInternal = ['devlog', 'publication'].includes(link.type)}
 					<a
-						href={project.links.demo}
-						target="_blank"
-						rel="noreferrer"
-						class="inline-flex items-center gap-1.5 rounded-lg bg-blue-600 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+						href={link.url}
+						target={!isInternal ? '_blank' : undefined}
+						rel={!isInternal ? 'noopener noreferrer' : undefined}
+						class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition focus:ring-2 focus:ring-offset-2 focus:outline-none {config.baseClass}"
 					>
-						<Icon icon="mage:external-link" width="14" height="14" />
-						<span>Demo</span>
+						<Icon icon={config.icon} width="14" height="14" />
+						<span>{link.label || config.label}</span>
 					</a>
-				{/if}
-				{#if project.links?.github}
-					<a
-						href={project.links.github}
-						target="_blank"
-						rel="noreferrer"
-						class="inline-flex items-center gap-1.5 rounded-lg bg-gray-900 px-3 py-1.5 text-xs font-bold text-white transition hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2"
-					>
-						<Icon icon="mage:github" width="14" height="14" />
-						<span>Code</span>
-					</a>
-				{/if}
-				{#if project.links?.youtube}
-					<a
-						href={project.links.youtube}
-						target="_blank"
-						rel="noreferrer"
-						class="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-bold text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2"
-					>
-						<Icon icon="logos:youtube-icon" width="14" height="14" />
-						<span>Video</span>
-					</a>
-				{/if}
-				{#if project.links?.devlog}
-					<a
-						href={project.links.devlog}
-						class="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-xs font-bold text-gray-700 transition hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-200 focus:ring-offset-2"
-					>
-						<Icon icon="mage:hash" width="14" height="14" />
-						<span>DevLog</span>
-					</a>
-				{/if}
+				{/each}
 			</div>
 		{/if}
 	</div>
 </article>
+
+<style>
+	.project-image {
+		transform: scale(var(--zoom, 1));
+	}
+
+	.group:hover .project-image {
+		transform: scale(calc(var(--zoom, 1) * 1.03));
+	}
+</style>
