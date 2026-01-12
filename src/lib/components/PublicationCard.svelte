@@ -73,6 +73,17 @@
 						<span>DOI</span>
 					</a>
 				{/if}
+				{#if pub.links?.url}
+					<a
+						href={pub.links.url}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[10px] font-bold text-gray-700 transition hover:bg-gray-50"
+					>
+						<Icon icon="mage:external-link" width="14" height="14" />
+						<span>Direct Link</span>
+					</a>
+				{/if}
 				{#if pub.links?.arxiv}
 					<a
 						href={pub.links.arxiv}

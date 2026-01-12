@@ -7,15 +7,13 @@
 	import CollectionFilter from '$lib/components/CollectionFilter.svelte';
 
 	let { data }: { data: PageData } = $props();
-	const LIST_SIZE = 6;
+	const LIST_SIZE = 8;
 
 	const manager = createCollectionManager(data.projects, {
-		searchFn: (p) =>
-			`${p.title} ${p.summary} ${p.tags.join(' ')} ${p.tech.map((t) => t.name).join(' ')}`,
+		searchFn: (p) => `${p.title} ${p.summary} ${p.tags.join(' ')} ${p.tech.map((t) => t.name).join(' ')}`,
 		filterFns: {
 			tags: (p, selected) => selected.size === 0 || [...selected].every((t) => p.tags.includes(t)),
-			tech: (p, selected) =>
-				selected.size === 0 || [...selected].every((t) => p.tech.some((tech) => tech.name === t))
+			tech: (p, selected) => selected.size === 0 || [...selected].every((t) => p.tech.some((tech) => tech.name === t))
 		}
 	});
 </script>
@@ -73,9 +71,7 @@
 	</div>
 
 	<!-- Grid -->
-	<div
-		class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:mt-8 md:grid-cols-3 md:gap-6 xl:grid-cols-4"
-	>
+	<div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 md:mt-8 md:grid-cols-3 md:gap-6 xl:grid-cols-4 pb-5">
 		{#each manager.filtered.slice(0, manager.visible) as p (p.slug)}
 			<ProjectCard project={p} />
 		{/each}

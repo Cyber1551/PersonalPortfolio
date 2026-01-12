@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { PageData } from './$types';
 	import Icon from '@iconify/svelte';
+	import { projectLinksConfig } from '$lib/data/projects';
 	let { data }: { data: PageData } = $props();
 	const project = $derived(data.project);
 
@@ -46,6 +47,15 @@
 								{project.year}
 							</span>
 						{/if}
+						{#if project.forked}
+							<span
+								class="inline-flex items-center gap-1 rounded-full bg-indigo-600 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-white uppercase shadow-sm ring-1 ring-white/10"
+								title="Contribution to a fork"
+							>
+								<Icon icon="mage:git-fork" width="12" height="12" />
+								<span>Forked</span>
+							</span>
+						{/if}
 						<h1 class="text-2xl font-black tracking-tight text-gray-900 md:text-4xl">
 							{project.title}
 						</h1>
@@ -69,50 +79,20 @@
 						{project.summary}
 					</p>
 
-					<!-- Actions -->
 					<div class="mt-6 flex flex-wrap items-center gap-2">
-						{#if project.links?.demo}
+						{#each project.links as link (link.url)}
+							{@const config = data.projectLinksConfig[link.type]}
+							{@const isInternal = ['devlog', 'publication'].includes(link.type)}
 							<a
-								href={project.links.demo}
-								target="_blank"
-								rel="noopener noreferrer"
-								class="inline-flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow-md transition hover:bg-blue-500 md:text-sm"
+								href={link.url}
+								target={!isInternal ? '_blank' : undefined}
+								rel={!isInternal ? 'noopener noreferrer' : undefined}
+								class="inline-flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-bold transition md:text-sm {config.baseClass}"
 							>
-								<Icon icon="mage:external-link" width="16" height="16" />
-								<span>Live Demo</span>
+								<Icon icon={config.icon} width="16" height="16" />
+								<span>{link.label || config.label}</span>
 							</a>
-						{/if}
-						{#if project.links?.github}
-							<a
-								href={project.links.github}
-								target="_blank"
-								rel="noopener noreferrer"
-								class="inline-flex items-center gap-2 rounded-lg bg-gray-900 px-4 py-2 text-xs font-bold text-white shadow-md transition hover:bg-gray-800 md:text-sm"
-							>
-								<Icon icon="mage:github" width="16" height="16" />
-								<span>Source Code</span>
-							</a>
-						{/if}
-						{#if project.links?.youtube}
-							<a
-								href={project.links.youtube}
-								target="_blank"
-								rel="noopener noreferrer"
-								class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50 md:text-sm"
-							>
-								<Icon icon="logos:youtube-icon" width="16" height="16" />
-								<span>Video</span>
-							</a>
-						{/if}
-						{#if project.links?.devlog}
-							<a
-								href={project.links.devlog}
-								class="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2 text-xs font-bold text-gray-700 transition hover:bg-gray-50 md:text-sm"
-							>
-								<Icon icon="mage:hash" width="16" height="16" />
-								<span>DevLog</span>
-							</a>
-						{/if}
+						{/each}
 					</div>
 				</header>
 
@@ -123,8 +103,8 @@
 					</h2>
 					<div class="scrollbar-thin scrollbar-thumb-gray-200 mb-10 flex-1 overflow-y-auto pr-4">
 						<article class="prose prose-sm max-w-none prose-zinc md:prose-base">
-							{#if project.overview}
-								<p>{project.overview}</p>
+							{#if data.overviewHtml}
+								{@html data.overviewHtml}
 							{:else}
 								<p class="text-gray-500 italic">
 									Full technical case study, architecture diagrams, and development insights are
@@ -144,14 +124,27 @@
 					class="relative shrink-0 overflow-hidden rounded-2xl bg-white shadow-lg ring-1 ring-black/5"
 				>
 					<div class="relative aspect-16/10 w-full overflow-hidden bg-gray-100">
+						{#if project.forked}
+							<div class="absolute top-0 left-0 z-10 h-24 w-24 overflow-hidden">
+								<div
+									class="absolute top-6 -left-10 w-36 -rotate-45 bg-indigo-600 py-1.5 text-center text-xs font-black text-white shadow-indigo-500/50 shadow-lg ring-1 ring-white/20"
+									title="Contribution to a fork"
+								>
+									<div class="flex items-center justify-center gap-1.5 uppercase tracking-widest">
+										<Icon icon="mage:git-fork" width="14" height="14" />
+										<span>Forked</span>
+									</div>
+								</div>
+							</div>
+						{/if}
 						{#if images.length > 0}
 							{@const currentImage = images[activeImageIndex]}
 							<img
 								src={currentImage.path}
 								alt={project.title}
-								class="h-full w-full object-cover"
-								style="object-position: {currentImage.offset?.x ?? 50}% {currentImage.offset?.y ??
-									50}%"
+								class="h-full w-full"
+								style="object-fit: {currentImage.offset?.fit ?? 'cover'}; object-position: {currentImage.offset?.x ?? 50}% {currentImage.offset?.y ??
+									50}%; transform: scale({currentImage.offset?.zoom ?? 1});"
 							/>
 
 							{#if images.length > 1}

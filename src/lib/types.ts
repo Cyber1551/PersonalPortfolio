@@ -30,7 +30,13 @@ export type Publication = {
 
 export type ProjectImage = {
 	path: string;
-	offset?: { x?: number; y?: number };
+	offset?: { x?: number; y?: number; zoom?: number; fit?: 'cover' | 'contain' | 'fill' | 'none' | 'scale-down' };
+};
+
+export type ProjectLink = {
+	type: 'github' | 'demo' | 'youtube' | 'devlog' | 'publication';
+	label?: string;
+	url: string;
 };
 
 export type Project = {
@@ -40,15 +46,10 @@ export type Project = {
 	year?: number;
 	tech: { name: string; icon: string }[];
 	tags: string[];
-	links: {
-		demo?: string;
-		github?: string;
-		youtube?: string;
-		devlog?: string;
-	};
+	links: ProjectLink[];
 	images: ProjectImage[];
 	featured?: boolean;
-	overview: string;
+	forked?: boolean;
 };
 
 export type DevlogPost = {
