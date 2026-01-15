@@ -8,19 +8,31 @@
 </script>
 
 <article
-	class="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 transition-all duration-500 focus-within:ring-2 focus-within:ring-blue-600 hover:-translate-y-0.5 hover:shadow-lg"
+ class="group relative flex h-full flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 transition-all duration-300 focus-within:ring-2 focus-within:ring-blue-600 hover:-translate-y-0.5 hover:shadow-md hover:ring-blue-600/10"
 >
 	<!-- Image Section -->
 	<div class="relative aspect-16/10 w-full overflow-hidden bg-gray-100">
 		{#if project.images?.length}
 			{@const mainImage = project.images[0]}
-			<img
-				src={mainImage.path}
-				alt={project.title}
-				class="project-image h-full w-full transition-all duration-700"
-				style="object-fit: {mainImage.offset?.fit ?? 'cover'}; object-position: {mainImage.offset?.x ?? 50}% {mainImage.offset?.y ?? 50}%; --zoom: {mainImage.offset?.zoom ?? 1};"
-				loading="lazy"
-			/>
+			{#if mainImage.path.endsWith('.mp4')}
+				<video
+					src={mainImage.path}
+					autoplay
+					muted
+					loop
+					playsinline
+					class="project-image h-full w-full transition-all duration-700"
+					style="object-fit: {mainImage.offset?.fit ?? 'cover'}; object-position: {mainImage.offset?.x ?? 50}% {mainImage.offset?.y ?? 50}%; --zoom: {mainImage.offset?.zoom ?? 1};"
+				></video>
+			{:else}
+				<img
+					src={mainImage.path}
+					alt={project.title}
+					class="project-image h-full w-full transition-all duration-700"
+					style="object-fit: {mainImage.offset?.fit ?? 'cover'}; object-position: {mainImage.offset?.x ?? 50}% {mainImage.offset?.y ?? 50}%; --zoom: {mainImage.offset?.zoom ?? 1};"
+					loading="lazy"
+				/>
+			{/if}
 		{:else}
 			<div
 				class="flex h-full w-full items-center justify-center bg-linear-to-br from-blue-50 to-indigo-50"

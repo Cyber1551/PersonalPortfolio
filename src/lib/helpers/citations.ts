@@ -1,5 +1,23 @@
 import type { Publication } from '$lib/types';
 
+const parseAuthor = (author: string) => {
+	const trimmed = author.trim();
+	// Handles "Last, First" (e.g., "Kassa, Y.")
+	if (trimmed.includes(', ')) {
+		const [last, first] = trimmed.split(', ');
+		return { last: last.trim(), first: first.trim() };
+	}
+	// Handles "First Last" (e.g., "Yohannes Kassa")
+	const parts = trimmed.split(' ');
+	if (parts.length > 1) {
+		return {
+			last: parts[parts.length - 1].trim(),
+			first: parts.slice(0, -1).join(' ').trim()
+		};
+	}
+	return { last: trimmed, first: '' };
+};
+
 const formatAuthors = (
 	authors: string | string[],
 	style: 'APA' | 'MLA' | 'Chicago' | 'IEEE' | 'BibTeX'
@@ -7,17 +25,10 @@ const formatAuthors = (
 	const authorList = Array.isArray(authors) ? authors : [authors];
 	if (authorList.length === 0) return 'Unknown Author';
 
-	if (style === 'IEEE') {
-		const formatted = authorList.map((author) => {
-			const parts = author.trim().split(' ');
-			if (parts.length > 1) {
-				const firstInitial = parts[0][0];
-				const lastName = parts[parts.length - 1];
-				return `${firstInitial}. ${lastName}`;
-			}
-			return author;
-		});
+	const parsed = authorList.map(parseAuthor);
 
+	if (style === 'IEEE') {
+		const formatted = parsed.map((a) => (a.first ? `${a.first} ${a.last}` : a.last));
 		if (formatted.length === 1) return formatted[0];
 		if (formatted.length === 2) return `${formatted[0]} and ${formatted[1]}`;
 		return `${formatted.slice(0, -1).join(', ')}, and ${formatted[formatted.length - 1]}`;
@@ -27,29 +38,45 @@ const formatAuthors = (
 		return authorList.join(' and ');
 	}
 
-	if (authorList.length === 1) return authorList[0];
-	if (authorList.length === 2) return `${authorList[0]} and ${authorList[1]}`;
-	return `${authorList.slice(0, -1).join(', ')}, and ${authorList[authorList.length - 1]}`;
+	if (style === 'APA') {
+		const formatted = parsed.map((a) => (a.first ? `${a.last}, ${a.first}` : a.last));
+		if (formatted.length === 1) return formatted[0];
+		if (formatted.length === 2) return `${formatted[0]} & ${formatted[1]}`;
+		return `${formatted.slice(0, -1).join(', ')}, & ${formatted[formatted.length - 1]}`;
+	}
+
+	if (style === 'MLA' || style === 'Chicago') {
+		const formatted = parsed.map((a, i) => {
+			if (i === 0) return a.first ? `${a.last}, ${a.first}` : a.last;
+			return a.first ? `${a.first} ${a.last}` : a.last;
+		});
+		if (formatted.length === 1) return formatted[0];
+		if (formatted.length === 2) return `${formatted[0]} and ${formatted[1]}`;
+		return `${formatted.slice(0, -1).join(', ')}, and ${formatted[formatted.length - 1]}`;
+	}
+
+	return authorList.join(', ');
+};
+
+const ensurePeriod = (text: string) => {
+	const t = text.trim();
+	if (!t) return '';
+	if (t.endsWith('.') || t.endsWith('?') || t.endsWith('!')) return t;
+	return t + '.';
+};
+
+export const formatDOI = (doi?: string) => {
+	if (!doi) return '';
+	if (doi.startsWith('http')) return doi;
+	return `https://doi.org/${doi}`;
 };
 
 export const makeAPACitation = (pub?: Publication) => {
 	if (!pub) return '';
-
-	// APA Format: Authors (Year). Title. Conference. DOI/URL
 	const authors = formatAuthors(pub.authors, 'APA');
-	let citation = `${authors} (${pub.year}). ${pub.title}. `;
-
-	if (pub.venue) {
-		citation += `${pub.venue}. `;
-	}
-
-	if (pub.links?.doi) {
-		citation += `https://doi.org/${pub.links.doi}`;
-	} else if (pub.links?.url) {
-		citation += pub.links.url;
-	}
-
-	return citation;
+	let citation = `${ensurePeriod(authors)} (${pub.year}). ${ensurePeriod(pub.title)} `;
+	if (pub.venue) citation += `${ensurePeriod(pub.venue)} `;
+	return citation + formatDOI(pub.links?.doi || pub.links?.url);
 };
 
 export const makeMLACitation = (pub?: Publication) => {
@@ -98,23 +125,12 @@ export const makeChicagoCitation = (pub?: Publication) => {
 
 export const makeIEEECitation = (pub?: Publication) => {
 	if (!pub) return '';
-
-	// IEEE Format: Authors, "Title," Conference, Year. [Online]. Available: DOI/URL
 	const authors = formatAuthors(pub.authors, 'IEEE');
 	let citation = `${authors}, "${pub.title}," `;
-
-	if (pub.venue) {
-		citation += `${pub.venue}, `;
-	}
-
+	if (pub.venue) citation += `in ${pub.venue}, `;
 	citation += `${pub.year}.`;
-
-	if (pub.links?.doi) {
-		citation += ` [Online]. Available: https://doi.org/${pub.links.doi}`;
-	} else if (pub.links?.url) {
-		citation += ` [Online]. Available: ${pub.links.url}`;
-	}
-
+	const doi = formatDOI(pub.links?.doi || pub.links?.url);
+	if (doi) citation += ` [Online]. Available: ${doi}`;
 	return citation;
 };
 

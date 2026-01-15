@@ -58,5 +58,7 @@ export type DevlogPost = {
 	date: string;
 	summary: string;
 	tags: string[];
-	content?: string[];
+	series?: string;
+	part?: number;
+	content?: any;
 };

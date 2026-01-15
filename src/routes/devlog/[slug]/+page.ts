@@ -1,16 +1,15 @@
 import type { PageLoad } from './$types';
-import { getPostBySlug } from '$lib/data/devlog';
 import { error } from '@sveltejs/kit';
+import { getDevlogPostBySlug } from '$lib/loaders/devlog';
 
 export const load: PageLoad = async ({ params }) => {
-	const post = getPostBySlug(params.slug);
-	if (!post) {
+	const data = await getDevlogPostBySlug(params.slug);
+
+	if (!data) {
 		error(404, {
 			message: `DevLog Post "${params.slug}" not found`
 		});
 	}
 
-	return {
-		post
-	};
+	return data;
 };
