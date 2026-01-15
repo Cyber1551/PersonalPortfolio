@@ -1,38 +1,61 @@
-# sv
+# Personal Portfolio
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A professional portfolio website showcasing software engineering projects, research publications, and development logs.
 
-## Creating a project
+## Tech Stack
 
-If you're seeing this, you've probably already done this step. Congrats!
+- **Framework:** [SvelteKit](https://kit.svelte.dev/)
+- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Icons:** [Iconify](https://iconify.design/)
+- **Deployment:** [Vercel](https://vercel.com/)
+
+## Features
+
+- **Project Showcase:** Detailed views of software projects with tech stack badges and links.
+- **Academic Publications:** List of research papers with support for multiple citation formats (IEEE, APA, MLA, etc.).
+- **Development Blog:** Space for build logs and technical notes.
+- **Responsive Design:** Fully optimized for mobile, tablet, and desktop viewing.
+- **SEO Optimized:** Proper meta tags and structured data for better visibility.
+
+## Getting Started
+
+### Prerequisites
+
+- [Node.js](https://nodejs.org/) (v20 or later recommended)
+- [pnpm](https://pnpm.io/) (v10 or later)
+
+### Installation
+
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/Cyber1551/PersonalPortfolio.git
+   ```
+
+2. Install dependencies:
+   ```sh
+   pnpm install
+   ```
+
+3. Start the development server:
+   ```sh
+   pnpm dev
+   ```
+
+## Building for Production
+
+To create a production-ready build:
 
 ```sh
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
+pnpm build
 ```
 
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+You can preview the production build with:
 
 ```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+pnpm preview
 ```
 
-## Building
+## License
 
-To create a production version of your app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+This project is personal and all rights are reserved by Brandon Lacy.
