@@ -4,7 +4,7 @@
 
 <div class="flex flex-col items-center justify-center py-20 text-center">
 	<div class="rounded-full bg-red-50 p-6 text-red-500">
-		<Icon icon="mingcute:question-line" width="64" height="64" />
+		<Icon icon="mage:box-3d" width="64" height="64" />
 	</div>
 	<h2 class="mt-6 text-2xl font-bold text-gray-900">Project not found</h2>
 	<p class="mt-2 text-gray-600">The project you are looking for doesn't exist or has been moved.</p>

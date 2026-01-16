@@ -1,9 +1,9 @@
 import type { PageLoad } from './$types';
 import { getProjectBySlug, projectLinksConfig } from '$lib/data/projects';
 import { error } from '@sveltejs/kit';
-import { marked } from 'marked';
+import { getProjectContentBySlug } from '$lib/loaders/projects';
 
-export const load: PageLoad = async ({ params, fetch }) => {
+export const load: PageLoad = async ({ params }) => {
 	const project = getProjectBySlug(params.slug);
 	if (!project) {
 		error(404, {
@@ -11,20 +11,11 @@ export const load: PageLoad = async ({ params, fetch }) => {
 		});
 	}
 
-	let overviewHtml = '';
-	try {
-		const response = await fetch(`/markdown/projects/${params.slug}.md`);
-		if (response.ok) {
-			const markdown = await response.text();
-			overviewHtml = await marked.parse(markdown);
-		}
-	} catch (e) {
-		console.error(`Failed to load overview for ${params.slug}:`, e);
-	}
+	const content = await getProjectContentBySlug(params.slug);
 
 	return {
 		project,
-		overviewHtml,
+		content,
 		projectLinksConfig
 	};
 };

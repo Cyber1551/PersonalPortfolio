@@ -20,6 +20,6 @@
 		type="search"
 		bind:value
 		{placeholder}
-		class="w-full rounded-2xl border-gray-200 bg-white py-3 pr-4 pl-11 text-sm shadow-sm transition-all outline-none focus:ring-4 md:text-base {focusClass}"
+		class="w-full rounded-2xl bg-white py-3 pr-4 pl-11 text-sm shadow-sm ring-1 ring-black/10 transition-all outline-none focus:ring-4 md:text-base {focusClass}"
 	/>
 </label>

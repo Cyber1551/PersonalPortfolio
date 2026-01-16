@@ -27,8 +27,8 @@
 				class="rounded-lg px-3 py-1.5 text-xs font-semibold shadow-sm transition-all {selected.has(
 					item
 				)
-					? `${activeClass} text-white shadow-md`
-					: 'border border-gray-200 bg-white text-gray-600 hover:border-gray-300 hover:bg-gray-50'}"
+					? `${activeClass} text-white shadow-md ring-1 ring-inset ring-black/5`
+					: 'bg-white text-gray-600 ring-1 ring-inset ring-black/10 hover:bg-gray-50 hover:ring-black/20'}"
 			>
 				{item}
 			</button>
