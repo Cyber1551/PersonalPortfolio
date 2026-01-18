@@ -21,7 +21,7 @@ export const projects: Project[] = [
 		],
 		links: [
 			{ type: 'github', url: 'https://github.com/Cyber1551/Clarity' },
-			{ type: 'devlog', url: '/devlog?series=Clarity', label: 'DevLog' }
+			// { type: 'devlog', url: '/devlog?series=Clarity', label: 'DevLog' }
 		]
 	},
 	{
