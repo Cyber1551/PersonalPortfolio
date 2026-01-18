@@ -60,5 +60,6 @@ export type DevlogPost = {
 	tags: string[];
 	series?: string;
 	part?: number;
+	hide?: boolean;
 	content?: any;
 };

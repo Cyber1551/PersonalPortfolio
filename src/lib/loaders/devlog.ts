@@ -1,5 +1,4 @@
 import type { DevlogPost } from '$lib/types';
-import { projects } from '$lib/data/projects';
 
 export interface SeriesData {
 	name: string;
@@ -8,16 +7,25 @@ export interface SeriesData {
 	lastUpdated: string;
 }
 
+export interface SeriesMetadata {
+	series: string;
+	summary: string;
+}
+
 export async function getAllDevlogPosts(): Promise<DevlogPost[]> {
-	const paths = import.meta.glob('/src/content/devlog/*.md', { eager: true });
+	const paths = import.meta.glob('/src/content/devlog/**/*.md', { eager: true });
 	const devPosts: DevlogPost[] = [];
 
 	for (const path in paths) {
+		if (path.endsWith('metadata.md')) continue;
+
 		const file = paths[path] as any;
 		const slug = path.split('/').at(-1)?.replace('.md', '');
 
 		if (file && typeof file === 'object' && 'metadata' in file && slug) {
 			const metadata = file.metadata as Omit<DevlogPost, 'slug'>;
+			if (metadata.hide === true) continue;
+
 			devPosts.push({
 				...metadata,
 				slug
@@ -25,10 +33,31 @@ export async function getAllDevlogPosts(): Promise<DevlogPost[]> {
 		}
 	}
 
-	return devPosts;
+	return devPosts.sort((a, b) => {
+		const dateCompare = b.date.localeCompare(a.date);
+		if (dateCompare !== 0) return dateCompare;
+		return (b.part ?? 0) - (a.part ?? 0);
+	});
 }
 
-export function getSeriesData(devPosts: DevlogPost[]): SeriesData[] {
+export async function getAllSeriesMetadata(): Promise<SeriesMetadata[]> {
+	const paths = import.meta.glob('/src/content/devlog/**/metadata.md', { eager: true });
+	const metadata: SeriesMetadata[] = [];
+
+	for (const path in paths) {
+		const file = paths[path] as any;
+		if (file && typeof file === 'object' && 'metadata' in file) {
+			metadata.push(file.metadata as SeriesMetadata);
+		}
+	}
+
+	return metadata;
+}
+
+export function getSeriesData(
+	devPosts: DevlogPost[],
+	allMetadata: SeriesMetadata[] = []
+): SeriesData[] {
 	const seriesMap = new Map<string, DevlogPost[]>();
 	devPosts.forEach((post) => {
 		if (post.series) {
@@ -41,10 +70,10 @@ export function getSeriesData(devPosts: DevlogPost[]): SeriesData[] {
 	return Array.from(seriesMap.entries())
 		.map(([name, posts]) => {
 			const sortedPosts = [...posts].sort((a, b) => (a.part ?? 0) - (b.part ?? 0));
-			const project = projects.find((p) => p.title === name);
+			const metadata = allMetadata.find((m) => m.series === name);
 			return {
 				name,
-				summary: project?.summary || `A series of posts about ${name}.`,
+				summary: metadata?.summary || `A series of posts about ${name}.`,
 				posts: sortedPosts,
 				lastUpdated: sortedPosts[sortedPosts.length - 1].date
 			};
@@ -53,8 +82,15 @@ export function getSeriesData(devPosts: DevlogPost[]): SeriesData[] {
 }
 
 export async function getDevlogPostBySlug(slug: string) {
-	const posts = import.meta.glob('/src/content/devlog/*.md', { eager: true });
-	const match = posts[`/src/content/devlog/${slug}.md`] as any;
+	const posts = import.meta.glob('/src/content/devlog/**/*.md', { eager: true });
+	let match: any = null;
+
+	for (const path in posts) {
+		if (path.endsWith(`/${slug}.md`) && !path.endsWith('metadata.md')) {
+			match = posts[path];
+			break;
+		}
+	}
 
 	if (!match) return null;
 
@@ -63,16 +99,19 @@ export async function getDevlogPostBySlug(slug: string) {
 		slug
 	};
 
+	if (post.hide === true) return null;
+
 	let seriesNav = null;
 	let seriesPosts: DevlogPost[] = [];
 	
 	if (post.series) {
 		seriesPosts = Object.entries(posts)
+			.filter(([path]) => !path.endsWith('metadata.md'))
 			.map(([path, file]: [string, any]) => ({
 				...file.metadata,
 				slug: path.split('/').at(-1)?.replace('.md', '')
 			}))
-			.filter((p) => p.series === post.series)
+			.filter((p) => p.series === post.series && p.hide !== true)
 			.sort((a, b) => (a.part ?? 0) - (b.part ?? 0));
 
 		const currentIndex = seriesPosts.findIndex((p) => p.slug === post.slug);

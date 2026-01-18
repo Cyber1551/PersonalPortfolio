@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from './$types';
+	import { page } from '$app/stores';
 	import Icon from '@iconify/svelte';
 	import DevlogCard from '$lib/components/DevlogCard.svelte';
 	import SeriesCard from '$lib/components/SeriesCard.svelte';
@@ -27,6 +28,13 @@
 			activeView = 'recent';
 		}
 	}
+
+	$effect(() => {
+		const seriesQuery = $page.url.searchParams.get('series');
+		if (seriesQuery) {
+			selectSeries(seriesQuery);
+		}
+	});
 </script>
 
 <svelte:head>
