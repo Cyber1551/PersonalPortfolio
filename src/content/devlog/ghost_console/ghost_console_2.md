@@ -123,7 +123,6 @@ systemd[1]: Failed to mount cgroup at /sys/fs/cgroup/systemd: No such file or di
 systemd[1]: Freezing execution.
 </pre>
 
-
 ![jornada_systemd_error.png](/images/devlogs/ghost_console/jornada_systemd_error.png)
 
 The kernel booted.
