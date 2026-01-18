@@ -58,7 +58,7 @@
 		</div>
 	</header>
 
-	<div class="grid gap-12 lg:grid-cols-[1fr_250px]">
+	<div class="grid gap-12 lg:grid-cols-[1fr_250px] pb-10">
 		<!-- Main Content -->
 		<div class="min-w-0">
 			<article class="prose prose-zinc max-w-none prose-h2:text-2xl prose-h2:font-black prose-h3:text-xl md:prose-lg">
@@ -154,7 +154,3 @@
 		</aside>
 	</div>
 </section>
-
-<style>
-	/* Use the same prose styles as projects if needed, or rely on tailwind prose */
-</style>

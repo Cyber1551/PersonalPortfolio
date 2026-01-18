@@ -1,3 +1,17 @@
 @import 'tailwindcss';
+@import './prism.css';
 @plugin '@tailwindcss/forms';
 @plugin '@tailwindcss/typography';
+
+/* Reset prose styles for code blocks to let Prism handle them */
+.prose pre[class*="language-"] {
+	background-color: #2d2d2d !important;
+}
+
+.prose pre[class*="language-"] code {
+	background-color: transparent !important;
+	padding: 0 !important;
+	color: inherit !important;
+	font-size: inherit !important;
+	font-weight: inherit !important;
+}
