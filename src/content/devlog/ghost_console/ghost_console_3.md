@@ -73,7 +73,7 @@ Small touches like this make a surprising difference when you're working on a ti
 
 Here's where things get interesting. While the Jornada does have a power button, it only functions in Windows CE. Once Linux boots, it becomes completely non-functional. Without a proper shutdown mechanism, the only option is to yank the battery.
 
-This creates a serious problem: pulling the battery without syncing risks corrupting the ext2 filesystem. I learned this lesson the hard way. Twice. The second incident required running fsck to repair dozens of corrupted inodes.
+This creates a serious problem: pulling the battery without syncing risks corrupting the ext2 filesystem. I learned this lesson the hard way. Twice. The second incident required running `fsck` to repair dozens of corrupted inodes.
 
 The solution is a proper shutdown script that syncs all pending writes, remounts the filesystem as read-only, and then actually powers down the device:
 
