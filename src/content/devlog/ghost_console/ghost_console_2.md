@@ -116,11 +116,14 @@ The wiki installation worked perfectly...or so it seemed.
 
 I booted the Jornada, and Linux kernel messages scrolled by on the screen. It looked promising. Then:
 
-```
+<pre class="bg-[#2d2d2d] text-[#d4d4d4] p-4 rounded-md font-mono overflow-x-auto leading-relaxed" style="font-size: 18px;">
+systemd[1]: Failed to mount tmpfs at /sys/fs/cgroup: No such file or directory
 systemd[1]: Failed to mount cgroup at /sys/fs/cgroup/systemd: No such file or directory
-systemd[1]: Failed to mount API filesystems, freezing.
-[  OK  ] Reached target Shutdown.
-```
+[<span class="text-red-500 font-bold">!!!!!!</span>] Failed to mount API filesystems, freezing.
+systemd[1]: Freezing execution.
+</pre>
+
+
 ![jornada_systemd_error.png](/images/devlogs/ghost_console/jornada_systemd_error.png)
 
 The kernel booted.

@@ -85,7 +85,7 @@ try:
         
         if stdin_fd in r:  # Keyboard → serial
             char = os.read(stdin_fd, 1)
-            if char == '\x11':  # Ctrl+Q exits
+            if char == '\\x11':  # Ctrl+Q exits
                 break
             os.write(fd, char)
 finally:
@@ -116,7 +116,7 @@ Success! On the screen I get the Qubes login prompt:
 login: _
 ```
 
-I logged in and tested basic VM management with `qvm-ls` that lists all currently running Qubes:
+I logged in and tested basic VM management with `qvm-ls` that lists all Qubes:
 
 ![jornada_serial_qubes.jpeg](/images/devlogs/ghost_console/jornada_serial_qubes.jpeg)
 
@@ -129,7 +129,7 @@ autoplay
 muted
 loop
 playsinline
-width="1000"/>
+width="600"/>
 
 ---
 
