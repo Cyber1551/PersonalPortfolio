@@ -1,6 +1,7 @@
 <script lang="ts">
  import type { PageData } from './$types';
  import Icon from '@iconify/svelte';
+ import { renderMermaid } from '$lib/helpers/mermaid';
  let { data }: { data: PageData } = $props();
 	const project = $derived(data.project);
 
@@ -103,7 +104,10 @@
 					Project Overview
 				</h2>
 				<div class="scrollbar-thin scrollbar-thumb-gray-200 mb-10 flex-1 overflow-y-auto pr-4">
-					<article class="prose prose-sm max-w-none prose-zinc md:prose-base">
+					<article
+						class="prose prose-sm max-w-none prose-zinc md:prose-base"
+						use:renderMermaid={data.content}
+					>
 						{#if data.content}
 							{@const Content = data.content}
 							<Content />

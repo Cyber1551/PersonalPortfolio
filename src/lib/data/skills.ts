@@ -16,7 +16,7 @@ export const skillCategories: SkillCategory[] = [
 			{ name: 'C++', icon: 'devicon:cplusplus', sort_order: 8 },
 			{ name: 'Rust', icon: 'devicon:rust', sort_order: 9 },
 			{ name: 'PostgreSQL', icon: 'devicon:postgresql', sort_order: 10 },
-			{ name: 'Redux', icon: 'devicon:redux', sort_order: 11 },
+			{ name: 'WPF', icon: 'bi:windows', sort_order: 11 },
 			{ name: 'Docker', icon: 'devicon:docker', sort_order: 12 },
 			{ name: 'Angular', icon: 'devicon:angular', sort_order: 13 },
 			{ name: 'TailwindCSS', icon: 'devicon:tailwindcss', sort_order: 14 },

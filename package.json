@@ -40,7 +40,8 @@
 	},
 	"dependencies": {
 		"@iconify/svelte": "^5.1.0",
-		"marked": "^17.0.1"
+		"marked": "^17.0.1",
+		"mermaid": "^11.15.0"
 	},
 	"pnpm": {
 		"onlyBuiltDependencies": [

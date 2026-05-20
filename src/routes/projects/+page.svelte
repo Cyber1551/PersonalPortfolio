@@ -37,7 +37,7 @@
 		<div class="flex flex-col items-center gap-4 md:flex-row">
 			<CollectionSearch
 				bind:value={manager.search}
-				placeholder="Search by name, tech, or description..."
+				placeholder="Search by name, tech, description, or tags..."
 				label="Search projects"
 			/>
 
