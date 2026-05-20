@@ -20,7 +20,7 @@ export const projects: Project[] = [
 			{ path: '/images/projects/clarity/sorted_fs.png' }
 		],
 		links: [
-			{ type: 'github', url: 'https://github.com/Cyber1551/Clarity' },
+			{ type: 'github', url: 'https://github.com/Cyber1551/Clarity' }
 			// { type: 'devlog', url: '/devlog?series=Clarity', label: 'DevLog' }
 		]
 	},
@@ -35,12 +35,20 @@ export const projects: Project[] = [
 			{ name: 'PostGIS', icon: 'logos:postgis' },
 			{ name: 'Docker', icon: 'logos:docker-icon' }
 		],
-		tags: ['Web Development', 'Research & Algorithms', 'Simulation'],
+		tags: ['Web Development', 'Research & Algorithms', 'Simulation', 'Data Visualization'],
 		images: [{ path: '/images/projects/routing.png', offset: { y: 100 } }],
 		links: [
 			{ type: 'publication', url: '/publications/bridge_health' },
-			{ type: 'github', url: 'https://github.com/ricksteam/DynamicSimulationConsole', label: 'API' },
-			{ type: 'github', url: 'https://github.com/ricksteam/DynamicSimulationEngine', label: 'Routing Engine' }
+			{
+				type: 'github',
+				url: 'https://github.com/ricksteam/DynamicSimulationConsole',
+				label: 'API'
+			},
+			{
+				type: 'github',
+				url: 'https://github.com/ricksteam/DynamicSimulationEngine',
+				label: 'Routing Engine'
+			}
 		]
 	},
 	{
@@ -58,12 +66,32 @@ export const projects: Project[] = [
 			{ path: '/images/projects/the_necrotic_trials/ability.png' },
 			{ path: '/images/projects/the_necrotic_trials/Attack1.mp4' },
 			{ path: '/images/projects/the_necrotic_trials/Attack2.mp4' },
-			{ path: '/images/projects/the_necrotic_trials/upgrade.png', offset: { zoom: 1.2, fit: 'contain' } },
+			{
+				path: '/images/projects/the_necrotic_trials/upgrade.png',
+				offset: { zoom: 1.2, fit: 'contain' }
+			},
 			{ path: '/images/projects/the_necrotic_trials/Zoom.mp4' }
 		],
 		links: [
-			{ type: 'youtube', url: 'https://youtube.com/playlist?list=PL_0Moy4B-vsVTob-tk3sldA20XA-vkl9m&si=Akn1op-MiVcgjwEq', label: 'DevLog Channel' }
+			{
+				type: 'youtube',
+				url: 'https://youtube.com/playlist?list=PL_0Moy4B-vsVTob-tk3sldA20XA-vkl9m&si=Akn1op-MiVcgjwEq',
+				label: 'DevLog Channel'
+			}
 		]
+	},
+	{
+		title: 'System Resource Monitor',
+		summary: 'A windows desktop dashboard for live CPU, memory, disk, and process metrics.',
+		slug: 'system_resource_monitor',
+		tech: [
+			{ name: 'C#', icon: 'logos:c-sharp' },
+			{ name: '.NET', icon: 'logos:dotnet' },
+			{ name: 'WPF', icon: 'bi:windows' }
+		],
+		tags: ['Desktop Apps', 'Systems Programming', 'Data Visualization', 'Utilities'],
+		images: [{ path: '/images/projects/system_resource_monitor/resource_monitor.png' }],
+		links: [{ type: 'github', url: 'https://github.com/Cyber1551/System-Resource-Monitor' }]
 	},
 	{
 		title: 'Anvil Cell Workbench',
@@ -74,7 +102,10 @@ export const projects: Project[] = [
 		images: [
 			{ path: '/images/projects/anvil_cell_workbench/anvil_cell_workbench1.png', offset: { y: 0 } },
 			{ path: '/images/projects/anvil_cell_workbench/anvil_cell_workbench2.png' },
-			{ path: '/images/projects/anvil_cell_workbench/anvil_cell_workbench3.png', offset: { y: 50, fit: 'contain' } }
+			{
+				path: '/images/projects/anvil_cell_workbench/anvil_cell_workbench3.png',
+				offset: { y: 50, fit: 'contain' }
+			}
 		],
 		links: [{ type: 'github', url: 'https://github.com/Cyber1551/Anvil-Cell-Workbench' }]
 	},
@@ -107,7 +138,7 @@ export const projects: Project[] = [
 			{ path: '/images/projects/fluidic_arm/fluidic_arm4.png', offset: { y: 0 } }
 		],
 		links: [{ type: 'github', url: 'https://github.com/Cyber1551/Fluidic-Arm' }]
-	},
+	}
 ];
 
 export const projectLinksConfig = {
